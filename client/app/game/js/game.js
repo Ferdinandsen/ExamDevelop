@@ -20,12 +20,13 @@
             var bgTileNumber = 1,
                 pathTileNumber = 2,
                 towerTileNumber = 3;
-            
-            var xx = 0, yy = 0;
-            
+
+            var xx = 0,
+                yy = 0;
+
             // 50 er tiles størrelser
-            var tileMatrix = new Array([width / 50 ], [height / 50 ]);
-           // var tileMatrix = ([],[]);
+            var tileMatrix = new Array([width / 50], [height / 50]);
+            // var tileMatrix = ([],[]);
             var sumsArray = [];
             var questionText;
             var randomSum;
@@ -87,32 +88,44 @@
                 console.log('hej');
                 console.log(towerTile.towerX);
                 console.log(towerTile.towerY);
-                console.log(tileMatrix[towerTile.towerX][towerTile.towerY]);
+//                console.log(tileMatrix[towerTile.towerX][towerTile.towerY]);
+                var towerIce = this.game.add.button(towerTile.towerX, towerTile.towerY, 'tower_ice', buyTower, this);
             }
 
             // sætter tiles
             for (var y = 0; y < height; y += 51) {
-                
-                              
+             xx = 0;
+
                 for (var x = 0; x < width; x += 51) {
 
-                    if (1 === 1) {
+                     if (y === 459){ //height / 2 + 1 for hver y 
+                        console.log("PATH TILE");
+                        var pathTile = this.game.add.image(x, y, 'path_tile', this);
+                    }
+                    else{
+                        
+                    if (Math.floor(Math.random() * 25) + 1 === 1) {
                         console.log('y = ' + yy);
-                     console.log('x = ' + xx);
-                        tileMatrix[xx][yy] = [towerTileNumber][towerTileNumber];
+                        console.log('x = ' + xx);
+                        //tileMatrix[xx][yy] = towerTileNumber;
                         var towerTile = this.game.add.button(x, y, 'tower_tile', buyTower, this);
-                        towerTile.towerX = xx;
-                        towerTile.towerY = yy;
-                     
+                        towerTile.towerX = x;
+                        towerTile.towerXX = xx;
+                         towerTile.towerY = y;
+                        towerTile.towerYY = yy;
+
                     } else {
-                        tileMatrix[xx][yy] = bgTileNumber;
+                        //tileMatrix[xx][yy] = bgTileNumber;
                         var bgTile = this.game.add.image(x, y, 'background_tile', this);
                     }
+                    console.log("Height/2 er: " + height / 2 + ", og y er: "+ y);
+                   
                     xx++;
                     //            this.game.add.button(0,0 , 'background_tile', checkAnswer, this);     button = clickable og checkAnswer er en metode        
                 }
-                 
-                 yy++;
+                }
+
+                yy++;
             }
 
 
