@@ -86,8 +86,8 @@
 
             function buyTower(towerTile) {
                 console.log('hej');
-                console.log(towerTile.towerX);
-                console.log(towerTile.towerY);
+                console.log(towerTile.towerXX);
+                console.log(towerTile.towerYY);
 //                console.log(tileMatrix[towerTile.towerX][towerTile.towerY]);
                 var towerIce = this.game.add.button(towerTile.towerX, towerTile.towerY, 'tower_ice', buyTower, this);
             }
@@ -105,8 +105,8 @@
                     else{
                         
                     if (Math.floor(Math.random() * 25) + 1 === 1) {
-                        console.log('y = ' + yy);
-                        console.log('x = ' + xx);
+//                        console.log('y = ' + yy);
+//                        console.log('x = ' + xx);
                         //tileMatrix[xx][yy] = towerTileNumber;
                         var towerTile = this.game.add.button(x, y, 'tower_tile', buyTower, this);
                         towerTile.towerX = x;
@@ -118,7 +118,7 @@
                         //tileMatrix[xx][yy] = bgTileNumber;
                         var bgTile = this.game.add.image(x, y, 'background_tile', this);
                     }
-                    console.log("Height/2 er: " + height / 2 + ", og y er: "+ y);
+//                    console.log("Height/2 er: " + height / 2 + ", og y er: "+ y);
                    
                     xx++;
                     //            this.game.add.button(0,0 , 'background_tile', checkAnswer, this);     button = clickable og checkAnswer er en metode        
