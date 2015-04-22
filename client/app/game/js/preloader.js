@@ -18,6 +18,8 @@
     },
       
     loadResources: function () {
+        this.load.image('background_tile', 'assets/background_tile.png');
+        this.load.image('tower_tile', 'assets/tower_tile.png');
         this.load.image('background', 'assets/background.png');
         this.load.image('timebar', 'assets/timebar.png');
 		this.load.image('buttonmask', 'assets/buttonmask.png');
