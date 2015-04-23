@@ -2,6 +2,7 @@
 
 angular.module('examAppopenshiftApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
+    $scope.highscore = {};
     $scope.awesomeThings = [];
 
     $http.get('/api/highscores').success(function(awesomeThings) {
