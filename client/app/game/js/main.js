@@ -3,8 +3,8 @@ window.onload = function () {
 
   var game
     , ns = window['pixione'];
-    var width  = 800; 
-    var height = 600;
+    var width  = 1600; 
+    var height = 900;
 
   game = new Phaser.Game( width, height, Phaser.AUTO, 'pixione-game');
   game.state.add('boot', ns.Boot);
