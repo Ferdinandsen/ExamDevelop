@@ -7,8 +7,62 @@
   </div>
 </header>
 
-<div class="container">
+<div class="container" id="body-container">
+<!--
   <div class="row">
+        <div class="col-lg-4 col-lg-offset-4">
+            <input type="search" id="search" value="" class="form-control" placeholder="Search using Fuzzy searching">
+        </div>
+    </div>
+-->
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>All time</h2>
+            <table class="table" id="scoretable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="highscore in awesomeThings"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                </tbody>
+            </table>
+            <hr>
+        </div>
+        <div class="col-lg-4">
+            <h2>Top 10 this month</h2>
+            <table class="table" id="scoretable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="highscore in awesomeThings"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                    
+                </tbody>
+            </table>
+            <hr>
+        </div>
+        <div class="col-lg-4">
+            <h2>Top 5 of all time</h2>
+            <table class="table" id="scoretable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="highscore in awesomeThings"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                </tbody>
+            </table>
+            <hr>
+        </div>
+    </div>
    
 </div>
 
