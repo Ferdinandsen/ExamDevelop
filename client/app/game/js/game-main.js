@@ -1,17 +1,22 @@
-window.onload = function () {
-  'use strict';
+//exports.rungame = function () {
 
-  var game
-    , ns = window['pixione'];
+    window.onload = function () {
+        'use strict';
 
-  game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'pixione-game');
-  game.state.add('boot', ns.Boot);
-  game.state.add('preloader', ns.Preloader);
-  game.state.add('menu', ns.Menu);
-  game.state.add('game', ns.Game);
-  game.state.add('over', ns.Over);
-  /* yo phaser:state new-state-files-put-here */
+        var game, ns = window['pixione'];
 
-  game.state.start('boot');
-  
-};
+        game = new Phaser.Game('100%', '100%', Phaser.AUTO, 'pixione-game');
+        game.state.add('boot', ns.Boot);
+        game.state.add('preloader', ns.Preloader);
+        game.state.add('menu', ns.Menu);
+        game.state.add('game', ns.Game);
+        game.state.add('over', ns.Over);
+        /* yo phaser:state new-state-files-put-here */
+
+        game.state.start('boot');
+
+
+    };
+
+//
+//};

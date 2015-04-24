@@ -5,6 +5,7 @@ var controller = require('./highscore.controller');
 
 var router = express.Router();
 
+//router.get('/highscores', controller.sortedlist);
 router.get('/', controller.index);
 router.get('/:id', controller.show);
 router.post('/', controller.create);
