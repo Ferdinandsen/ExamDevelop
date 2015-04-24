@@ -3,6 +3,11 @@
 var _ = require('lodash');
 var Highscore = require('./highscore.model');
 
+var d = new Date(),
+    month = d.getMonth()+1,
+    year = d.getFullYear()
+
+
 // Get list of highscores
 exports.index = function (req, res) {
     console.log('index');
@@ -12,8 +17,9 @@ exports.index = function (req, res) {
             return handleError(res, err);
         }
         highscoreInfo.all = highscores;
-        Highscore.find()
-            .sort('-score').exec(function (err, highscoresSorted) {
+        console.log(month+" "+year);
+        Highscore.find({date: { $lt: new Date(), $gte: new Date(year+','+month+',1') }})
+            .sort('-score').limit(10).exec(function (err, highscoresSorted) {
                 if (err) {
                     return handleError(res, err);
                 }
