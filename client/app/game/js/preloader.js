@@ -25,6 +25,7 @@
         this.load.image('background', 'assets/background.png');
         this.load.image('timebar', 'assets/timebar.png');
 		this.load.image('buttonmask', 'assets/buttonmask.png');
+        this.load.image("enemy","assets/enemy.png");
 		this.load.spritesheet('buttons', 'assets/buttons.png',400,50);
 	    this.load.spritesheet('menubuttons', 'assets/menubuttons.bmp',512, 1024);
 	    this.load.atlas('worm', 'assets/worm.png', 'assets/worm.json');
