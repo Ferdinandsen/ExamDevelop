@@ -2,31 +2,68 @@
 
 <header class="hero-unit" id="banner">
   <div class="container">
-    <h1>'Allo, 'Allo!</h1>
-    <p class="lead">Kick-start your next web app with Angular Fullstack</p>
-    <img src="assets/images/yeoman.png" alt="I'm Yeoman">
+    <h1>Dr. Dangerous Bunnies highscore</h1>
+   
   </div>
 </header>
 
-<div class="container">
+<div class="container" id="body-container">
+<!--
   <div class="row">
-    <div class="col-lg-12">
-      <h1 class="page-header">Features:</h1>
-      <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
-        <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="deleteThing(thing)">&times;</button></a></li>
-      </ul>
+        <div class="col-lg-4 col-lg-offset-4">
+            <input type="search" id="search" value="" class="form-control" placeholder="Search using Fuzzy searching">
+        </div>
     </div>
-  </div>
-
-  <form class="thing-form">
-    <label>Syncs in realtime across clients</label>
-    <p class="input-group">
-      <input type="text" class="form-control" placeholder="Add a new thing here." ng-model="newThing">
-      <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary" ng-click="addThing()">Add New</button>
-      </span>
-    </p>
-  </form>
+-->
+    <div class="row">
+        <div class="col-lg-4">
+            <h2>All time</h2>
+            <table class="table" id="scoretable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="highscore in highscore.all"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                </tbody>
+            </table>
+            <hr>
+        </div>
+        <div class="col-lg-4">
+            <h2>Top 10 this month</h2>
+            <table class="table" id="scoretable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="highscore in highscore.sorted10"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                    
+                </tbody>
+            </table>
+            <hr>
+        </div>
+        <div class="col-lg-4">
+            <h2>Top 5 of all time</h2>
+            <table class="table" id="scoretable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="highscore in highscore.sorted5"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                </tbody>
+            </table>
+            <hr>
+        </div>
+    </div>
+   
 </div>
 
 <footer class="footer">

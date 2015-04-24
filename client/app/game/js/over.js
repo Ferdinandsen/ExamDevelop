@@ -29,7 +29,8 @@
 
     update: function() {
       if (this.game.input.activePointer.isDown){
-        this.game.state.start('game');
+        this.game.state.start('game');     
+                   
       }
     }
   };
