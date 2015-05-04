@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 var HighscoreSchema = new Schema({
     name: String,
     score: Number,
-    date: Date//{type: Date, default: Date.now}
+    date: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('Highscore', HighscoreSchema);
