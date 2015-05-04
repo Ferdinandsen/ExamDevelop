@@ -1,0 +1,21 @@
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <h2>All users</h2>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="user in users">
+        <strong>{{user.name}}</strong><br>
+        <span class="text-muted">{{user.email}}</span>
+        <a ng-click="deleteUser(user)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
+    </li>
+  </ul>
+    <hr>
+    <h2>All highscores</h2>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="highscore in highscores">
+        <strong>{{highscore.name}}</strong><br>
+        <span class="text-muted">{{highscore.score}}</span>
+        <a ng-click="deleteHighscore(highscore)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
+    </li>
+  </ul>
+</div>

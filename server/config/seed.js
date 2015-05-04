@@ -6,7 +6,7 @@
 'use strict';
 
 var Highscore = require('../api/highscore/highscore.model');
-
+var User = require('../api/user/user.model');
 
 Highscore.find({}).remove(function() {
   Highscore.create({
@@ -32,4 +32,21 @@ Highscore.find({}).remove(function() {
     name : 'Lars Bilde',
     score : '800000000'
   });
+});
+User.find({}).remove(function() {
+  User.create({
+    provider: 'local',
+    name: 'Test User',
+    email: 'test@test.com',
+    password: 'test'
+  }, {
+    provider: 'local',
+    role: 'admin',
+    name: 'Admin',
+    email: 'admin@admin.com',
+    password: 'admin'
+  }, function() {
+      console.log('finished populating users');
+    }
+  );
 });
