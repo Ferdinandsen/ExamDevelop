@@ -1,14 +1,19 @@
 (function () {
     'use strict';
 
-    function Over() {    }
-    
+    function Over() {}
+
 
     Over.prototype = {
         init: function (endScore) {
+            var scope = this;
             this.game.name = null;
             this.game.score = endScore;
-            
+            this.lort = 5;
+            this.game.lort = 5;
+            var lort = 5;
+
+
             var allHighscores = [];
             var index = 0;
             //send JSON to API
@@ -29,7 +34,6 @@
             xmlhttp.send(highscoreObj);
 
             $.get('http://localhost:9000/api/highscores', function (responseText) {
-//                console.log(this.game.score);
                 var resultList = [];
 
                 allHighscores = responseText.all;
@@ -47,34 +51,32 @@
                         break;
                     }
                     resultList.push(allHighscores[a]);
-                    console.log(allHighscores[a].name);
                 }
                 resultList.push(allHighscores[index]);
-                //console.log("Egen score push");
                 for (var b = index + 1; b < index + 6; b++) {
-                    //console.log("5 efter push");
                     if (b > allHighscores.length) {
                         break;
                     }
                     resultList.push(allHighscores[b]);
                 }
-                //console.log("Push slut");
-                console.log(Over.game.score);
                 test(resultList);
             });
 
-
             function test(resultList) {
-                this.game = game;
+
                 //console.log("Test begynd");
                 for (var i = 0; i < resultList.length; i++) {
                     //console.log(resultList[i].name + " " + resultList[i].score);
-                    var infoLabel = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Du fik: ' + score + '\nClick eller tab for at genstarte', {
+                    var color = '#fff';
+                    if (allHighscores[index]._id === resultList[i]._id) {
+                        color = '#00FF00';
+                    }
+                    var scoreLabel = scope.game.add.text(scope.game.world.centerX, scope.game.world.centerY, i + 1 + '. ' + resultList[i].name + " " + resultList[i].score, {
                         font: '20px Lucida Console',
-                        fill: '#fff',
-                        align: 'center'
+                        fill: color,
+                        align: 'left'
                     });
-                    infoLabel.anchor.setTo(0.5, 8);
+                    scoreLabel.anchor.setTo(0.5, 8 - i);
 
 
                 }
@@ -118,6 +120,6 @@
     };
 
     window['pixione'] = window['pixione'] || {};
-    window['pixione'].Over = Over;
+    window['pixione'].Over = Over;;
 
 }());
