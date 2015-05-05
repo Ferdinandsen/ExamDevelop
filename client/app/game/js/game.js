@@ -6,36 +6,48 @@
 	Game.prototype = {
 		init: function () {
 			this.game.wormSprite = {};
-			this.game.creepSprite = {};
 			this.path = [];
 			this.points = {
 				'x': [],
 				'y': []
 			};
 			this.gametime = 300;
+			this.creeps = [];
+			this.creepcount = 0;
+			this.creepStartYPos = null;
+			this.towerCount = 0;
+			this.height = this.game.height;
+			this.width = this.game.width;
+			this.rows = (this.height / 50) + 1;
+			this.cols = (this.width / 50) + 1;
+			this.tileMatrix = [];
+			this.bgTileNumber = 1;
+			this.pathTileNumber = 2;
+			this.towerTileNumber = 3;
+			this.tileSize = 51;
+			this.pi = 0;
+			this.globalScope = this;
+
 
 		},
 		create: function () {
-
+			var createScope = this.globalScope;
 			//Baggrunds farve
 			this.game.stage.backgroundColor = '#ffffff';
 			this.game.stage.disableVisibilityChange = true;
-
-			var height = this.game.height;
-			var width = this.game.width;
-			var bgTileNumber = 1,
-				pathTileNumber = 2,
-				towerTileNumber = 3;
-
-			var rows = (height / 50) + 1;
-			var cols = (width / 50) + 1;
+			this.towers = [];
+			var bgTileNumber = this.bgTileNumber,
+				pathTileNumber = this.pathTileNumber,
+				towerTileNumber = this.towerTileNumber;
+			var height = this.height;
+			var width = this.width;
+			var cols = this.cols;
+			var rows = this.rows;
 			var mX = 0,
 				mY = 0;
 
-
-
 			// 50 er tiles størrelser
-			var tileMatrix = [];
+			var tileMatrix = this.tileMatrix;
 			while (tileMatrix.push(new Array(rows)) < cols);
 			var sumsArray = [];
 			var questionText;
@@ -50,47 +62,43 @@
 			var game = this.game;
 			var score = game.score = 0;
 			var music;
-			var tileSize = 51;
+			var tileSize = this.tileSize;
 			var iFrequency = 1000; // expressed in miliseconds
 			var myInterval = 0;
-			var enemies;
-
-			var creepStartYPos;
-
-
+			var towerCount = this.towerCount;
 			var points = this.points;
+			var towers = this.towers;
+			this.highscore = 0;
 
 			var bmd = null;
 			var path = this.path;
-			this.pi = 0;
 
 
-
-			function nextNumber() {
-				scoreText.text = 'Score: ' + score.toString() + '\nBest Score: ' + topScore.toString();
-				if (buttonMask) {
-					buttonMask.destroy();
-					game.tweens.removeAll();
-				}
-				//                buttonMask = game.add.graphics(game.world.centerX - 200, 250);
-				//                buttonMask.beginFill(0xffffff);
-				//                buttonMask.drawRect(0, 0, 400, 200);
-				//                buttonMask.endFill();
-				numberTimer.mask = buttonMask;
-				if (score > 0) {
-					timeTween = game.add.tween(buttonMask);
-					timeTween.to({
-						x: game.world.centerX + 200
-					}, 3000, 'Linear', true);
-					timeTween.onComplete.addOnce(function () {
-						gameOver();
-					}, game);
-				}
-				randomSum = game.rnd.between(0, 2);
-				questionText.text = sumsArray[Math.min(Math.round((score - 100) / 400) + 1, 4)]
-                [randomSum][game.rnd.between(0, sumsArray[Math.min(Math.round((score - 100) / 400) + 1, 4)]
-                [randomSum].length - 1)];
-			}
+			//			function nextNumber() {
+			//				scoreText.text = 'Score: ' + score.toString() + '\nBest Score: ' + topScore.toString();
+			//				if (buttonMask) {
+			//					buttonMask.destroy();
+			//					game.tweens.removeAll();
+			//				}
+			//				//                buttonMask = game.add.graphics(game.world.centerX - 200, 250);
+			//				//                buttonMask.beginFill(0xffffff);
+			//				//                buttonMask.drawRect(0, 0, 400, 200);
+			//				//                buttonMask.endFill();
+			//				numberTimer.mask = buttonMask;
+			//				if (score > 0) {
+			//					timeTween = game.add.tween(buttonMask);
+			//					timeTween.to({
+			//						x: game.world.centerX + 200
+			//					}, 3000, 'Linear', true);
+			//					timeTween.onComplete.addOnce(function () {
+			//						gameOver();
+			//					}, game);
+			//				}
+			//				randomSum = game.rnd.between(0, 2);
+			//				questionText.text = sumsArray[Math.min(Math.round((score - 100) / 400) + 1, 4)]
+			//                [randomSum][game.rnd.between(0, sumsArray[Math.min(Math.round((score - 100) / 400) + 1, 4)]
+			//                [randomSum].length - 1)];
+			//			}
 
 			//            function checkAnswer(button) {
 			//                if (!isGameOver) {
@@ -124,38 +132,6 @@
 				console.log("Clicked on ice tower");
 			}
 
-			function buyTower(towerTile) {
-				var towerIce = this.game.add.button(towerTile.TilePX, towerTile.TilePY, 'tower_ice', clickIceTower, this);
-				//Lav et istårn, der gør noget x sekund
-				//                spawnEnemy();
-			}
-
-			function spawnEnemy() {
-				//	               var enemy = game.add.sprite(400,400,"enemy");
-				//                    var enemy2 = icetower.Enemy(game, 200, 200,5,5);
-			}
-
-			//            function isBgTile(bgtile) {
-			//                console.log('hej');
-			//                console.log("X: " + bgtile.TileMX);
-			//                console.log("Y: " + bgtile.TileMY);
-			//                console.log("dennne bgtile er : " + tileMatrix[bgtile.TileMX][bgtile.TileMY]);
-			//            }
-			//
-			//            function isPathTile(pathTile) {
-			//                console.log('hej');
-			//                console.log("X: " + pathTile.TileMX);
-			//                console.log("Y: " + pathTile.TileMY);
-			//                console.log("dennne pathtile er : " + tileMatrix[pathTile.TileMX][pathTile.TileMY]);
-			//            }
-			//
-			//            function isTowerTile(towerTile) {
-			//                console.log('hej');
-			//                console.log("X: " + towerTile.TileMX);
-			//                console.log("Y: " + towerTile.TileMY);
-			//                console.log("dennne towerTile er : " + tileMatrix[towerTile.TileMX][towerTile.TileMY]);
-			//            }
-
 			function placeBgTile(pX, pY, mX, mY, game) {
 				var bgTile = game.add.button(pX, pY, 'background_tile', null, this);
 				bgTile.TilePX = pX;
@@ -188,6 +164,13 @@
 				tileMatrix[mX][mY] = towerTileNumber;
 			}
 
+			function buyTower(towerTile) {
+				console.log('hej');
+				var newTower = new tower(createScope.towerCount, createScope.game, towerTile.TilePX, towerTile.TilePY);
+				createScope.towers.push(newTower);
+				createScope.towerCount++;
+			}
+
 			function insertBackground(game) {
 				for (var pY = 0; pY < height; pY += tileSize) {
 					mX = 0;
@@ -217,14 +200,14 @@
 						placePathTile(pX, pY, mX, mY, game);
 						direction = north;
 						pX = pX - tileSize;
-						
+
 					} else if (randomNumber === south && direction != north && pY < height) {
 						pY = pY + tileSize;
 						mY = mY + 1;
 						placePathTile(pX, pY, mX, mY, game);
 						direction = south;
 						pX = pX - tileSize;
-						
+
 					} else {
 						for (var i = 0; i < 2; i++) {
 							placePathTile(pX, pY, mX, mY, game);
@@ -266,25 +249,14 @@
 				return pixel / tileSize;
 			}
 
-			function getPixelPosByMatrixPos(koordinat) {
-				return koordinat * tileSize;
-			}
+
 
 
 			insertBackground(this.game);
 			insertPath(this.game);
 			insertTowers(this.game);
-			getCreepStartYPos();
+			//getCreepStartYPos();
 			//spawnCreep();
-			
-
-			function getCreepStartYPos() {
-				for (var y = 0; y < rows; y++) {
-					if (tileMatrix[0][y] === pathTileNumber) {
-						creepStartYPos = getPixelPosByMatrixPos(y);
-					}
-				}
-			}
 
 
 
@@ -329,6 +301,7 @@
 			//            game.wormSprite.checkWorldBounds = true;
 			//            game.wormSprite.events.onOutOfBounds.add(wormSpriteOut, this);
 
+			//MAGICNUMBERS
 			questionText = this.game.add.text(game.world.centerX, 160, '-', {
 				font: 'bold 72px Arial',
 				fill: '#ffffff'
@@ -345,7 +318,7 @@
 			//                button.input.useHandCursor = true;
 			//            }
 			// numberTimer = this.game.add.sprite(this.game.world.centerX - 200, 250, 'timebar');
-			nextNumber();
+			//			nextNumber();
 
 			function gameOver() {
 				isGameOver = true;
@@ -353,49 +326,127 @@
 				music.stop();
 				game.state.start('over', true, false, score);
 			}
+		},
 
-		}, spawnCreep: function() {
-				this.game.creepSprite = this.game.add.sprite(0, 0, 'worm');
-				this.game.creepSprite.anchor.set(0);
-				this.game.creepSprite.scale.setTo(0.7, 0.7);
-				this.game.physics.arcade.enable(this.game.creepSprite);
-
-				this.game.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 6, '', 4), 30, true);
-				this.game.creepSprite.animations.play('move', 10, true);
-		
-								//MAGIC NUMBER
-				//x er vores movement speed
-				var x = 1 / this.game.width;
-				//							var x = 0.000050
-
-				for (var i = 0; i <= 1; i += x) {
-					var px = this.game.math.linearInterpolation(this.points.x, i);
-					var py = this.game.math.linearInterpolation(this.points.y, i);
-					this.path.push({
-						x: px,
-						y: py
-					});
+		getPixelPosByMatrixPos: function (koordinat) {
+			return koordinat * this.tileSize;
+		},
+		getCreepStartYPos: function () {
+			for (var y = 0; y < this.rows; y++) {
+				if (this.tileMatrix[0][y] === this.pathTileNumber) {
+					this.creepStartYPos = this.getPixelPosByMatrixPos(y);
 				}
-			},
-		
+			}
+		},
+		updateScore: function (score) {
+			this.highscore += score;
+			console.log(this.highscore);
+		},
+
 		update: function () {
-	 
-			if(this.gametime === 300){
-				this.spawnCreep();
+			if (this.creepStartYPos === null) {
+				this.getCreepStartYPos();
+			}
+			if (this.gametime === 300) {
+				this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.path, this.creepStartYPos, this.pi))
 				this.gametime = 0;
+				this.creepcount++;
+			}
+			for (var i = 0; i < this.creeps.length; i++) {
+				if (this.creeps[i].alive) {
+					this.creeps[i].update();
+				}
+			}
+
+			for (var i = 0; i < this.towers.length; i++) {
+				this.towers[i].update(this.creeps, this.game);
 			}
 			this.gametime++;
-			this.game.creepSprite.x = this.path[this.pi].x;
-			this.game.creepSprite.y = this.path[this.pi].y;
-			this.pi++;
-			if (this.pi >= this.path.length) {
-				this.pi = 0;
-			}
 		}
+
+
 	};
 
 	window['pixione'] = window['pixione'] || {};
 	window['pixione'].Game = Game;
 
-
 }());
+
+tower = function (index, game, towerX, towerY) {
+	towerScope = this;
+	this.index = index;
+	this.game = game;
+	this.towerX = towerX;
+	this.towerY = towerY;
+	this.damage = 1;
+	this.radius = 100;
+	this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, 'tower_ice');
+	this.towerSprite.anchor.set(0);
+	//	this.towerSprite.scale(1,1);
+	this.game.physics.arcade.enable(this.towerSprite);
+};
+
+tower.prototype.update = function (creeps, game) {
+
+	creeps.forEach(function (bunny) {
+		if (game.physics.arcade.distanceBetween(towerScope.towerSprite, bunny.creepSprite) < towerScope.radius) {
+			bunny.damage();
+		}
+	});
+};
+
+bunny = function (index, game, points, path, startY, pi) {
+	this.index = index;
+	this.startY = startY;
+	this.startX = 0;
+	this.path = path;
+	this.points = points;
+	this.pi = pi;
+	this.game = game;
+	this.health = 5;
+	this.alive = true;
+
+	this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
+	this.creepSprite.anchor.set(0);
+	this.creepSprite.scale.setTo(0.7, 0.7);
+
+	this.game.physics.arcade.enable(this.creepSprite);
+
+	this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 6, '', 4), 30, true);
+	this.creepSprite.animations.play('move', 10, true);
+
+	//MAGIC NUMBER
+	//x er vores movement speed
+	var x = 1 / this.game.width;
+	//							var x = 0.000050
+
+	for (var i = 0; i <= 1; i += x) {
+		var px = this.game.math.linearInterpolation(this.points.x, i);
+		var py = this.game.math.linearInterpolation(this.points.y, i);
+		this.path.push({
+			x: px,
+			y: py
+		});
+	}
+};
+
+bunny.prototype.damage = function () {
+	this.health -= 1;
+	if (this.health <= 0) {
+		this.alive = false;
+		this.creepSprite.kill();
+		this.game.updateScore(this.health);
+		return true;
+	}
+	return false;
+};
+
+bunny.prototype.update = function () {
+	this.gametime++;
+	this.creepSprite.x = this.path[this.pi].x;
+	this.creepSprite.y = this.path[this.pi].y;
+	this.pi++;
+	if (this.pi >= this.path.length) {
+		this.pi = 0;
+	}
+}

@@ -11,7 +11,8 @@ var mainGame = (function () {
             game.state.add('menu', ns.Menu);
             game.state.add('game', ns.Game);
             game.state.add('over', ns.Over);
-            /* yo phaser:state new-state-files-put-here */
+				
+					/* yo phaser:state new-state-files-put-here */
 
             game.state.start('boot');
       }
