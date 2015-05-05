@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	function Game() {}
+	function Game() { }
 
 	Game.prototype = {
 		init: function () {
@@ -125,7 +125,6 @@
 				bgTile.TileMX = mX;
 				bgTile.TileMY = mY;
 				tileMatrix[mX][mY] = bgTileNumber;
-
 			}
 
 			function clickIceTower() {
@@ -278,7 +277,6 @@
 				//  Move the alien to the top of the screen again
 				wormSprite.reset(-32, game.world.centerY);
 				wormSprite.body.velocity.setTo(40, 0);
-
 			}
 
 			music = this.game.add.audio('bgmusic');
@@ -331,6 +329,7 @@
 		getPixelPosByMatrixPos: function (koordinat) {
 			return koordinat * this.tileSize;
 		},
+		
 		getCreepStartYPos: function () {
 			for (var y = 0; y < this.rows; y++) {
 				if (this.tileMatrix[0][y] === this.pathTileNumber) {
@@ -338,6 +337,7 @@
 				}
 			}
 		},
+		
 		updateScore: function (score) {
 			this.highscore += score;
 			console.log(this.highscore);
@@ -357,20 +357,17 @@
 					this.creeps[i].update();
 				}
 			}
-
 			for (var i = 0; i < this.towers.length; i++) {
 				this.towers[i].update(this.creeps, this.game);
 			}
 			this.gametime++;
 		}
-
-
 	};
 
 	window['pixione'] = window['pixione'] || {};
 	window['pixione'].Game = Game;
 
-}());
+} ());
 
 tower = function (index, game, towerX, towerY) {
 	towerScope = this;
