@@ -473,7 +473,7 @@
 	                isGameOver = true;
 	                localStorage.setItem('topScore', Math.max(score, topScore));
 //	                music.stop();
-	                game.state.start('over', true, false, score + 450);
+	                game.state.start('over', true, false, score + 8000);
 	            }
 
 
