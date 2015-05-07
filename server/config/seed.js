@@ -11,26 +11,55 @@ var User = require('../api/user/user.model');
 Highscore.find({}).remove(function() {
   Highscore.create({
     name : 'Anaconda',
-    score : '100',
+    score : '1000',
     date: "2015-03-24T11:23:22.048Z"
   }, {
     name : 'Rambo',
-    score : '1000',
+    score : '900',
       date: "2015-03-24T11:23:22.048Z"
   }, {
-    name : 'Chuck Norris',
-    score : '99999999999'
-      ,date: "2015-04-24T11:23:22.048Z"
-  },  {
     name : 'Conan',
-    score : '20',
+    score : '800',
       date: "2015-02-24T11:23:22.048Z"
   },  {
-    name : 'André',
-    score : '-300'
+    name : 'Kaj Børge',
+    score : '700'
   },{
     name : 'Lars Bilde',
-    score : '800000000'
+    score : '600'
+  }, {
+    name : 'Trillebør',
+    score : '500'
+  }, {
+    name : 'André',
+    score : '400'
+  }, {
+    name : 'Tuller',
+    score : '350'
+  }, {
+    name : 'Slikkepind',
+    score : '300'
+  }, {
+    name : 'Briller',
+    score : '270'
+  }, {
+    name : 'Træt af stole',
+    score : '250'
+  }, {
+    name : 'slik med',
+    score : '220'
+  }, {
+    name : 'Heldigt',
+    score : '200'
+  }, {
+    name : 'Igen',
+    score : '150'
+  }, {
+    name : '*raslen med slikpapir*',
+    score : '100'
+  }, {
+    name : 'Snøffel',
+    score : '50'
   });
 });
 User.find({}).remove(function() {
