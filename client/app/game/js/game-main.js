@@ -5,7 +5,7 @@ var mainGame = (function () {
       startGame: function () {
             var game, ns = window['pixione'];
 
-            game = new Phaser.Game(1600, 800, Phaser.AUTO, 'pixione-game');
+            game = new Phaser.Game(1600, 900, Phaser.AUTO, 'pixione-game');
             game.state.add('boot', ns.Boot);
             game.state.add('preloader', ns.Preloader);
             game.state.add('menu', ns.Menu);
