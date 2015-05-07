@@ -77,13 +77,8 @@
                         align: 'left'
                     });
                     scoreLabel.anchor.setTo(0.5, 8 - i);
-
-
                 }
             };
-
-
-
 
             function compare(a, b) {
                 if (a.score < b.score)

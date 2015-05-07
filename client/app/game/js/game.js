@@ -419,4 +419,4 @@ bunny.prototype.update = function () {
 		}
 		this.pi = 0;
 	}
-}
+};

@@ -5,8 +5,6 @@ var mainGame = (function () {
     return {
       startGame: function () {
 
-            var game, ns = window['pixione'];
-
             game = new Phaser.Game(1600, 800, Phaser.AUTO, 'pixione-game');
 
             game.state.add('boot', ns.Boot);
