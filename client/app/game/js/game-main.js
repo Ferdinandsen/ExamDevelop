@@ -1,10 +1,10 @@
 var mainGame = (function () {
     'use strict';
-    
+    var game, ns = window['pixione'];
+
     return {
       startGame: function () {
-            var game, ns = window['pixione'];
-
+            
             game = new Phaser.Game(1600, 800, Phaser.AUTO, 'pixione-game');
             game.state.add('boot', ns.Boot);
             game.state.add('preloader', ns.Preloader);
@@ -14,7 +14,11 @@ var mainGame = (function () {
             /* yo phaser:state new-state-files-put-here */
 
             game.state.start('boot');
-      }
+      },
+       endGame: function () {
+            console.log('slut');
+            game.destroy();
+       }
 //        ,
 //         endGame: function () {
 //             console.log('slut');
