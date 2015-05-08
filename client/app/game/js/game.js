@@ -130,7 +130,6 @@
             function buyTower(towerTile) {
                 var newTower = new tower(createScope.towerCount, createScope.game, towerTile.TilePX, towerTile.TilePY, createScope.towerBullets);
                 createScope.towers.push(newTower);
-                console.log(towers);
                 createScope.towerCount++;
             }
 
@@ -289,7 +288,6 @@
             if (this.creepStartYPos === null) {
                 this.getCreepStartYPos();
             }
-
             if (this.gametime === this.creepSpawnTimer) {
                 //Fix at den forstørrer path array
                 this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.creepStartYPos, this.pi))
