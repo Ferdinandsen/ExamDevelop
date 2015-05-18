@@ -383,7 +383,7 @@ bunny = function (index, game, points, startY, pi) {
     this.creepSprite.anchor.set(0);
     this.creepSprite.scale.setTo(0.7, 0.7);
     this.creepSprite.index = index;
-    this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 6, '', 4), 30, true);
+    this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true);//
     this.creepSprite.animations.play('move', 10, true);
 
     for (var i = 0; i <= 1; i += this.movementSpeed) {
