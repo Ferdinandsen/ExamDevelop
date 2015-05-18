@@ -56,12 +56,9 @@
 			var healthText;
 			this.gold = 0;
 			var isGameOver = false;
-			var topScore;
 			var game = this.game;
-			var score = game.score = 0;
 			var music;
 			var tileSize = this.tileSize;
-			var towerCount = this.towerCount;
 			var points = this.points;
 			var towers = this.towers;
 			this.highscore = 0;
@@ -77,13 +74,13 @@
 			}
 
 
-			function placeTowerTile(x, y, xx, yy, game) {
+			function placeTowerTile(pX, pY, mX, mY, game) {
 				var towerTile = game.add.button(pX, pY, 'tower_tile', isBgTile, this);
-				bgTile.TilePX = pX;
-				bgTile.TilePY = pY;
-				bgTile.TileMX = mX;
-				bgTile.TileMY = mY;
-				tileMatrix[mX][mY] = bgTileNumber;
+				towerTile.TilePX = pX;
+				towerTile.TilePY = pY;
+				towerTile.TileMX = mX;
+				towerTile.TileMY = mY;
+				tileMatrix[mX][mY] = towerTileNumber;
 			}
 
 			function clickIceTower() {
@@ -197,6 +194,7 @@
 							if (x != cols && tileMatrix[x + 1][y] !== pathTileNumber) { // højre
 								placeTowerTile(pX + tileSize, pY, x + 1, y, game);
 							}
+						
 						}
 					}
 				}
@@ -348,9 +346,7 @@ tower.prototype.update = function (creeps, game) {
 				bullet.body.setSize(20,20);
 				this.game.debug.body(bullet);
 				bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
-
-				//				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
-
+				//this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
 				this.game.physics.arcade.collide(this.bullets, creeps[i].creepSprite, null, bulletHit);
 			}
 		}
@@ -372,7 +368,7 @@ bunny = function (index, game, points, startY, pi) {
 	this.gold = 20;
 	var x = 0.001000;
 	this.movementSpeed = x;
-//	var speed = 	1 / game.width/2;
+//	var speed = 1 / game.width/2;
 	this.game.physics.enable(this, Phaser.Physics.ARCADE);
 
 	this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
@@ -406,7 +402,7 @@ bunny.prototype.damage = function () {
 };
 
 bunny.prototype.update = function () {
-	this.game.debug.body(this.creepSprite);
+	//this.game.debug.body(this.creepSprite);
 		this.gametime++;
 	this.creepSprite.x = this.path[this.pi].x;
 	this.creepSprite.y = this.path[this.pi].y;
