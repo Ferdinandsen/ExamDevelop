@@ -517,39 +517,39 @@ tower.prototype.update = function (creeps, game) {
 };
 
 bunny = function (index, game, points, startY, pi) {
-  this.index = index;
-  this.path = [];
-  this.startY = startY;
-  this.startX = 0;
-  this.points = points;
-  this.pi = pi;
-  this.game = game;
-  this.health = 5;
-  this.alive = true;
-  this.score = 5;
-  this.gold = 20;
-  var x = 0.001000;
-  this.movementSpeed = x;
-  //	var speed = 	1 / game.width/2;
-  this.game.physics.enable(this, Phaser.Physics.ARCADE);
+    this.index = index;
+    this.path = [];
+    this.startY = startY;
+    this.startX = 0;
+    this.points = points;
+    this.pi = pi;
+    this.game = game;
+    this.health = 5;
+    this.alive = true;
+    this.score = 5;
+    this.gold = 20;
+    var x = 0.001000;
+    this.movementSpeed = x;
+    //	var speed = 	1 / game.width/2;
+    this.game.physics.enable(this, Phaser.Physics.ARCADE);
 
-  this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
-  this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+    this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
+    this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
 
-  this.creepSprite.anchor.set(0);
-  this.creepSprite.scale.setTo(0.7, 0.7);
-  this.creepSprite.index = index;
-  this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 6, '', 4), 30, true);
-  this.creepSprite.animations.play('move', 10, true);
+    this.creepSprite.anchor.set(0);
+    this.creepSprite.scale.setTo(0.7, 0.7);
+    this.creepSprite.index = index;
+    this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true);//
+    this.creepSprite.animations.play('move', 10, true);
 
-  for (var i = 0; i <= 1; i += this.movementSpeed) {
-    var px = this.game.math.linearInterpolation(this.points.x, i);
-    var py = this.game.math.linearInterpolation(this.points.y, i);
-    this.path.push({
-      x: px,
-      y: py
-    });
-  }
+    for (var i = 0; i <= 1; i += this.movementSpeed) {
+        var px = this.game.math.linearInterpolation(this.points.x, i);
+        var py = this.game.math.linearInterpolation(this.points.y, i);
+        this.path.push({
+            x: px,
+            y: py
+        });
+    }
 };
 
 bunny.prototype.damage = function () {

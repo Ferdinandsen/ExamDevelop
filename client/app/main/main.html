@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="highscore in highscore.all | orderBy:'name'"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                    <tr ng-repeat="highscore in highscore.all | orderBy:'name'" ng-if="highscore.isDeleted!=true"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
                 </tbody>
             </table>
             <hr>
@@ -40,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="highscore in highscore.sorted10"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                    <tr ng-repeat="highscore in highscore.sorted10" ng-if="highscore.isDeleted!=true"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
                     
                 </tbody>
             </table>
@@ -56,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="highscore in highscore.sorted5"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
+                    <tr ng-repeat="highscore in highscore.sorted5" ng-if="highscore.isDeleted!=true"><td>{{highscore.name}}</td><td>{{highscore.score}}</td></tr>
                 </tbody>
             </table>
             <hr>
