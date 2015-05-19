@@ -35,8 +35,8 @@
 			this.load.atlas('death', 'assets/death.png', '../assets/death.json');
 			this.load.bitmapFont('gul', '../assets/gul.png', '../assets/gul.fnt');
 			this.load.bitmapFont('minecraftia', '../assets/minecraftia.png', '../assets/minecraftia.xml');
-			this.load.audio('bgmusic', ['../assets/audio/bgMusic.ogg']);
-			this.load.audio('buttonGood', ['../assets/audio/buttongood.ogg']);
+			this.load.audio('bgmusic', ['../assets/audio/bgMusic.mp3']);
+			this.load.audio('mew', ['../assets/audio/mew.mp3']);
 			this.load.audio('buttonBad', ['../assets/audio/buttonbad.wav']);
 			this.load.audio('gameover', ['../assets/audio/gameover.wav']);
 
