@@ -1,11 +1,12 @@
 (function () {
   'use strict';
-
   function GameState() {
   }
 
   GameState.prototype = {
     init: function () {
+      this.ns = window['pixione'];
+      this.ns.Bird();
 
       this.gametime = 0;
       this.creeps = [];
@@ -24,6 +25,7 @@
 
     create: function () {
       var game = this.game;
+      this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
       game.physics.setBoundsToWorld();
       game.gameState = this;
       var createScope = this;
@@ -41,6 +43,9 @@
       this.iceTower = 'tower_ice';
       this.fireTower = 'tower_fire';
       this.lightningTower = 'lightning_tower';
+
+      this.bunnyCreep = 'rabbit';
+      this.bossCreep = 'boss';
 
       this.bgTileNumber = 1;
       this.pathTileNumber = 2;
@@ -184,7 +189,9 @@
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          createScope.towers.push(new tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType));
+          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType);
+          createScope.towers.push(tårn);
+          console.log('ost', tårn);
           createScope.towerCount++;
           createScope.updateGold(createScope.towerCost);
         } else {
@@ -374,7 +381,6 @@
 
       }
 
-
       insertBackground(game);
       insertPath(this.game);
       insertTowers(this.game);
@@ -411,30 +417,40 @@
 
     spawnCreeps: function () {
       this.test2 = 0;
-      var delauy = 500;
+      var delay = 500;
       var counter = 0;
       var localGameState = this;
       var testCreeps = this.creeps;
       var finish = false;
-      while (finish == false) { // spwan untill the amount is reached
+      var maxCreeps = this.level * 5;
+      var creepType = this.bunnyCreep;
+
+      while (!finish) { // spwan untill the amount is reached
         this.test2++;
-        if (this.spawnAmount !== (this.level * 5)) {
-          this.time.events.add(counter * delauy, function () {
-            var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi);
-            testCreeps.push(newBunny);
-            localGameState.creepcount++;
-          });
-          counter++;
-          //          if (this.test2 % 60 === 0) {
-          //            this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.creepStartYPos, this.pi))
-          //            console.log("spawned creep");
-          //          this.test2 = 0;
+        if (this.spawnAmount !== maxCreeps) {
           this.spawnAmount++;
+          console.log("spawner sprite", creepType);
+          counter++;
+          if (this.spawnAmount === maxCreeps) {
+            console.log("spawner boss", creepType);
+            this.time.events.add(counter * delay, function () {
+              console.log("spawner boss", creepType);
+              var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi, localGameState.bossCreep);
+              testCreeps.push(newBunny);
+              localGameState.creepcount++;
+            });
+          }
+          else {
+            this.time.events.add(counter * delay, function () {
+              console.log("spawner kanin", creepType);
+              var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi, creepType);
+              testCreeps.push(newBunny);
+              localGameState.creepcount++;
+            });
+          }
         } else {
           finish = true;
         }
-
-
       }
     },
     update: function () {
@@ -479,142 +495,167 @@
 
 } ());
 
-tower = function (index, game, towerX, towerY, towerBullets, towerType) {
-  towerScope = this;
-  this.kills = 0;
-  this.upgradeAvailable = false;
-  this.index = index;
-  this.game = game;
-  this.towerX = towerX;
-  this.towerY = towerY;
-  this.towerType = towerType;
-  this.bullets = towerBullets;
-  this.nextFire = 0;
-  this.upgradePic = this.game.add.sprite(this.towerX, this.towerY, 'upgrade');
-  this.upgradePic.visible = false;
-  this.towerLevel = 1;
-  
-  //Towertype switch
-  switch (towerType) {
-    case this.game.gameState.iceTower:
-      iceTowerProperties(this);
-      break;
-    case this.game.gameState.fireTower:
-      fireTowerProperties(this);
-      break;
-  }
-  this.spriteSettings();
-};
+//tower = function (index, game, towerX, towerY, towerBullets, towerType) {
+//  towerScope = this;
+//  this.kills = 0;
+//  this.upgradeAvailable = false;
+//  this.index = index;
+//  this.game = game;
+//  this.towerX = towerX;
+//  this.towerY = towerY;
+//  this.towerType = towerType;
+//  this.bullets = towerBullets;
+//  this.nextFire = 0;
+//  this.upgradePic = this.game.add.sprite(this.towerX, this.towerY, 'upgrade');
+//  this.upgradePic.visible = false;
+//  this.towerLevel = 1;
+//  
+//  //Towertype switch
+//  switch (towerType) {
+//    case this.game.gameState.iceTower:
+//      iceTowerProperties(this);
+//      break;
+//    case this.game.gameState.fireTower:
+//      fireTowerProperties(this);
+//      break;
+//  }
+//  this.spriteSettings();
+////};
+//};
+//
+//
+//tower.prototype.spriteSettings = function () {
+//  this.towerSprite.anchor.set(0);
+//  this.towerSprite.inputEnabled = true;
+//  this.towerSprite.events.onInputDown.add(this.upgrade, this);
+//  //	this.towerSprite.scale(1,1);
+//  this.game.physics.arcade.enable(this.towerSprite);
+//}
+//tower.prototype.bulletOut = function (bullet) {
+//  bullet.kill();
+//}
+//
+//tower.prototype.upgrade = function () {
+//  if (this.upgradeAvailable && this.game.gameState.gold >= this.upgradeCost) {
+//    this.towerLevel++;
+//    this.firerate = this.firerate / 2;
+//    this.radius = this.radius * 2;
+//    this.damage++;
+//    this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType + this.towerLevel);
+//    this.upgradePic.kill();
+//    this.upgradeAvailable = false;
+//    this.game.gameState.updateGold(this.upgradeCost);
+//  }
+//}
+//
+//tower.prototype.checkForUpgrade = function () {
+//  if (this.game.gameState.gold >= this.upgradeCost && this.towerLevel === 1) {
+//    this.upgradeAvailable = true;
+//    this.upgradePic.visible = true;
+//  } else {
+//    this.upgradePic.visible = false;
+//  }
+//}
+//
+//tower.prototype.update = function (creeps, game) {
+//  this.game.gameState.towerBullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
+//  for (var i = 0; i < creeps.length; i++) {
+//    if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
+//      var bullet = this.bullets.getFirstExists(false);
+//      if (creeps[i].alive && this.game.time.now > this.nextFire) {
+//        this.nextFire = this.game.time.now + this.firerate;
+//        game.physics.arcade.enable(bullet);
+//        bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
+//        bullet.anchor.set(0.5, 0.5);
+//        bullet.scale.set(0.5, 0.5);
+//        bullet.body.setSize(20, 20);
+//        bullet.shootingTower = this;
+//        bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
+//        bullet.checkWorldBounds = true;
+//        bullet.events.onOutOfBounds.add(this.bulletOut, this);
+//        //				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
+//      }
+//      this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, this);
+//    }
+//  }
+//};
+//
+//var iceTowerProperties = function (tower) {
+//  tower.damage = 5;
+//  tower.radius = 150;
+//  tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
+//  tower.firerate = 800; // højt tal = langsommere skud
+//  tower.bulletSpeed = 250; // højt tal = hurtigere skud
+//  tower.upgradeCost = 50;
+//}
+//
+//var fireTowerProperties = function (tower) {
+//  tower.damage = 3;
+//  tower.radius = 100;
+//  tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
+//  tower.firerate = 1000;
+//  tower.bulletSpeed = 450;
+//  tower.upgradeCost = 10;
+//}
+//
+//var bulletHit = function (bunny, bullet) {
+//  bullet.kill();
+//  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage(bullet.shootingTower.damage);
+//  if (destroyed) {
+//    bullet.shootingTower.kills++;
+//  }
+//};
 
-tower.prototype.spriteSettings = function () {
-  this.towerSprite.anchor.set(0);
-  this.towerSprite.inputEnabled = true;
-  this.towerSprite.events.onInputDown.add(this.upgrade, this);
-  //	this.towerSprite.scale(1,1);
-  this.game.physics.arcade.enable(this.towerSprite);
-}
-tower.prototype.bulletOut = function (bullet) {
-  bullet.kill();
-}
-
-tower.prototype.upgrade = function () {
-  if (this.upgradeAvailable && this.game.gameState.gold >= this.upgradeCost) {
-    this.towerLevel++;
-    this.firerate = this.firerate / 2;
-    this.radius = this.radius * 2;
-    this.damage++;
-    this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType + this.towerLevel);
-    this.upgradePic.kill();
-    this.upgradeAvailable = false;
-    this.game.gameState.updateGold(this.upgradeCost);
-  }
-}
-
-tower.prototype.checkForUpgrade = function () {
-  if (this.game.gameState.gold >= this.upgradeCost && this.towerLevel === 1) {
-    this.upgradeAvailable = true;
-    this.upgradePic.visible = true;
-  } else {
-    this.upgradePic.visible = false;
-  }
-}
-
-tower.prototype.update = function (creeps, game) {
-  this.game.gameState.towerBullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
-  for (var i = 0; i < creeps.length; i++) {
-    if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
-      var bullet = this.bullets.getFirstExists(false);
-      if (creeps[i].alive && this.game.time.now > this.nextFire) {
-        this.nextFire = this.game.time.now + this.firerate;
-        game.physics.arcade.enable(bullet);
-        bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
-        bullet.anchor.set(0.5, 0.5);
-        bullet.scale.set(0.5, 0.5);
-        bullet.body.setSize(20, 20);
-        bullet.shootingTower = this;
-        bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
-        bullet.checkWorldBounds = true;
-        bullet.events.onOutOfBounds.add(this.bulletOut, this);
-        //				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
-      }
-      this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, this);
-    }
-  }
-};
-
-iceTowerProperties = function (tower) {
-  tower.damage = 5;
-  tower.radius = 150;
-  tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
-  tower.firerate = 800; // højt tal = langsommere skud
-  tower.bulletSpeed = 250; // højt tal = hurtigere skud
-  tower.upgradeCost = 50;
-}
-
-fireTowerProperties = function (tower) {
-  tower.damage = 3;
-  tower.radius = 100;
-  tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
-  tower.firerate = 1000;
-  tower.bulletSpeed = 450;
-  tower.upgradeCost = 10;
-}
-
-bulletHit = function (bunny, bullet) {
-  bullet.kill();
-  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage(bullet.shootingTower.damage);
-  if (destroyed) {
-    bullet.shootingTower.kills++;
-  }
-};
-
-bunny = function (index, game, points, startY, pi) {
+bunny = function (index, game, points, startY, pi, creepType) {
   this.index = index;
   this.path = [];
   this.startY = startY;
   this.startX = 0;
   this.points = points;
+  this.creepType = creepType;
   this.pi = pi;
   this.game = game;
-  this.health = this.game.gameState.level * 5;
   this.alive = true;
-  this.score = 5;
-  this.gold = 20;
-  //Sets the speed of the bunny
-  var x = 0.001000;
-  this.movementSpeed = x;
-  //	var speed = 	1 / game.width/2;
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
 
-  this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
-  this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+
+  switch (creepType) {
+    case this.game.gameState.bunnyCreep:
+      this.health = this.game.gameState.level * 5;
+      this.score = 5;
+      this.gold = 20;
+      //Sets the speed of the bunny
+      var x = 0.001000;
+      this.movementSpeed = x;
+      this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'rabbit');
+      this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+      this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
+      this.creepSprite.animations.play('move', 10, true);
+      this.creepSprite.scale.setTo(0.7, 0.7);
+      break;
+
+    case this.game.gameState.bossCreep:
+      this.health = this.game.gameState.level * 10;
+      this.score = 50;
+      this.gold = 100;
+      //Sets the speed of the bunny
+      var x = 0.002000;
+      this.movementSpeed = x;
+      this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'rabbit');
+      this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+      this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht w', 0, 3, '', 4), 30, true); //
+      this.creepSprite.animations.play('move', 10, true);
+      this.creepSprite.scale.setTo(0.7, 0.7);
+      break;
+  }
 
   this.creepSprite.anchor.set(0);
-  this.creepSprite.scale.setTo(0.7, 0.7);
   this.creepSprite.index = index;
-  this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
-  this.creepSprite.animations.play('move', 10, true);
-
+  
+  // make path
+  this.generateMovementPath();
+};
+bunny.prototype.generateMovementPath = function () {
   for (var i = 0; i <= 1; i += this.movementSpeed) {
     var px = this.game.math.linearInterpolation(this.points.x, i);
     var py = this.game.math.linearInterpolation(this.points.y, i);
@@ -623,8 +664,7 @@ bunny = function (index, game, points, startY, pi) {
       y: py
     });
   }
-};
-
+}
 bunny.prototype.damage = function (damage) {
   this.health -= damage;
   if (this.health <= 0) {
