@@ -2,6 +2,7 @@
   'use strict';
   var x;
   var localGameState;
+  var upgradePic;
 
   //  function Tower(index, gameState, towerX, towerY, towerBullets, towerType) {
   //
@@ -10,9 +11,10 @@
   //  }
 
   function Tower(index, gameState, towerX, towerY, towerBullets, towerType) {
+    console.log('start', index, gameState, towerX, towerY, towerBullets, towerType);
     localGameState = gameState;
     var tower = {};
-    
+
     var towerSprite;
     var kills = 0;
     var upgradeAvailable = false;
@@ -23,24 +25,26 @@
     var towerType = towerType;
     var bullets = towerBullets;
     var nextFire = 0;
-    var upgradePic = gameState.game.add.sprite(towerX, towerY, 'upgrade');
+    upgradePic = gameState.game.add.sprite(towerX, towerY, 'upgrade');
     upgradePic.visible = false;
     var towerLevel = 1;
   
     //Towertype switch
     switch (towerType) {
       case gameState.iceTower:
-        iceTowerProperties(tower);
+        Tower.prototype.iceTowerProperties(tower);
         break;
       case gameState.fireTower:
-        fireTowerProperties();
+        Tower.prototype.fireTowerProperties();
         break;
     }
     return tower;
-    //        spriteSettings();
+            Tower.prototype.spriteSettings();
   };
 
-  var iceTowerProperties = function (tower) {
+
+  Tower.prototype.iceTowerProperties = function (tower) {
+    console.log('ice tower...', tower);
     tower.damage = 5;
     tower.radius = 150;
     tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
@@ -49,7 +53,8 @@
     tower.upgradeCost = 50;
   }
 
-  var fireTowerProperties = function (tower) {
+  Tower.prototype.fireTowerProperties = function (tower) {
+    console.log('fire tower...', tower);
     tower.damage = 3;
     tower.radius = 100;
     tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
@@ -58,41 +63,43 @@
     tower.upgradeCost = 10;
   }
 
-  var spriteSettings = function () {
+  Tower.prototype.spriteSettings = function () {
+    console.log('spriteSetting...');
     x.towerSprite.anchor.set(0);
-    towerSprite.inputEnabled = true;
-    towerSprite.events.onInputDown.add(this.upgrade, this);
+    x.towerSprite.inputEnabled = true;
+    x.towerSprite.events.onInputDown.add(this.upgrade, this);
     //	this.towerSprite.scale(1,1);
     game.game.physics.arcade.enable(towerSprite);
   }
-  var bulletOut = function (bullet) {
+  Tower.prototype.bulletOut = function (bullet) {
     bullet.kill();
   }
 
-  var upgrade = function () {
+  Tower.prototype.upgrade = function () {
+    console.log('upgrade');
     if (this.upgradeAvailable && this.game.gameState.gold >= this.upgradeCost) {
       this.towerLevel++;
       this.firerate = this.firerate / 2;
       this.radius = this.radius * 2;
       this.damage++;
       this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType + this.towerLevel);
-      this.upgradePic.kill();
-      this.upgradeAvailable = false;
+      upgradePic.kill();
+      upgradeAvailable = false;
       this.game.gameState.updateGold(this.upgradeCost);
     }
   }
 
-  var checkForUpgrade = function () {
-    if (this.game.gameState.gold >= this.upgradeCost && this.towerLevel === 1) {
-      this.upgradeAvailable = true;
-      this.upgradePic.visible = true;
+  Tower.prototype.checkForUpgrade = function (index) {
+    if (localGameState.gold >= this.upgradeCost && this.towerLevel === 1) {
+      upgradeAvailable = true;
+      upgradePic.visible = true;
     } else {
-      this.upgradePic.visible = false;
+      upgradePic.visible = false;
     }
   }
 
-  var update = function (creeps, game) {
-    this.game.gameState.towerBullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
+  Tower.prototype.update = function (creeps, game) {
+    localGameState.towerBullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
     for (var i = 0; i < creeps.length; i++) {
       if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
         var bullet = this.bullets.getFirstExists(false);
@@ -116,7 +123,7 @@
 
 
 
-  var bulletHit = function (bunny, bullet) {
+  Tower.prototype.bulletHit = function (bunny, bullet) {
     bullet.kill();
     var destroyed = towerScope.game.gameState.creeps[bunny.index].damage(bullet.shootingTower.damage);
     if (destroyed) {
