@@ -19,9 +19,7 @@
       this.test = 0;
       this.spawnAmount = 0;
       this.towerCost = 30;
-      this.canAffordIceTower = true;
-      console.log(this);
-      console.log(this.game);
+      this.canAffordTower = true;
     },
 
     create: function () {
@@ -39,7 +37,7 @@
       this.towers = [];
       var towers = this.towers;
       var towerCount = this.towerCount;
-
+      //Tower typenames
       this.iceTower = 'tower_ice';
       this.fireTower = 'tower_fire';
       this.lightningTower = 'lightning_tower';
@@ -67,7 +65,7 @@
       var mX = 0,
         mY = 0;
 
-      // 50 er tiles størrelser
+
       this.tileMatrix = [];
       var tileMatrix = this.tileMatrix;
       while (tileMatrix.push(new Array(rows)) < cols);
@@ -78,13 +76,14 @@
       var levelText;
       var waveText;
       var menuBarText;
-
+      //Set Starting gold amount
       this.gold = 100;
 
       var isGameOver = false;
       var music;
       var mew;
-
+      
+      // 50 er tiles størrelse
       this.tileSize = 50;
       var tileSize = this.tileSize;
 
@@ -100,9 +99,9 @@
         this.gold -= gold;
         goldText.setText('Gold: ' + this.gold);
         if (this.gold >= this.towerCost) {
-          this.canAffordIceTower = true;
+          this.canAffordTower = true;
         } else {
-          this.canAffordIceTower = false;
+          this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
           this.towers[i].checkForUpgrade();
@@ -115,9 +114,9 @@
         scoreText.setText('Score: ' + this.highscore);
         goldText.setText('Gold: ' + this.gold);
         if (this.gold >= this.towerCost) {
-          this.canAffordIceTower = true;
+          this.canAffordTower = true;
         } else {
-          this.canAffordIceTower = false;
+          this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
           this.towers[i].checkForUpgrade();
@@ -299,7 +298,7 @@
       }
 
       function startDrag(theSprite) {
-        if (!createScope.canAffordIceTower) {
+        if (!createScope.canAffordTower) {
           theSprite.inputEnabled = false;
         } else {
           theSprite.inputEnabled = true;
@@ -498,20 +497,10 @@ tower = function (index, game, towerX, towerY, towerBullets, towerType) {
   //Towertype switch
   switch (towerType) {
     case this.game.gameState.iceTower:
-      this.damage = 5;
-      this.radius = 150;
-      this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType);
-      this.firerate = 800; // højt tal = langsommere skud
-      this.bulletSpeed = 250; // højt tal = hurtigere skud
-      this.upgradeCost = 50;
+      iceTowerProperties(this);
       break;
     case this.game.gameState.fireTower:
-      this.damage = 3;
-      this.radius = 100;
-      this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType);
-      this.firerate = 1000;
-      this.bulletSpeed = 250;
-      this.upgradeCost = 10;
+      fireTowerProperties(this);
       break;
   }
   this.spriteSettings();
@@ -551,7 +540,7 @@ tower.prototype.checkForUpgrade = function () {
 }
 
 tower.prototype.update = function (creeps, game) {
-  this.game.gameState.towerBullets.createMultiple(1, 'bullet');
+  this.game.gameState.towerBullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
   for (var i = 0; i < creeps.length; i++) {
     if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
       var bullet = this.bullets.getFirstExists(false);
@@ -560,7 +549,7 @@ tower.prototype.update = function (creeps, game) {
         game.physics.arcade.enable(bullet);
         bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
         bullet.anchor.set(0.5, 0.5);
-        bullet.scale.set(0.2, 0.2);
+        bullet.scale.set(0.5, 0.5);
         bullet.body.setSize(20, 20);
         bullet.shootingTower = this;
         bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
@@ -569,18 +558,36 @@ tower.prototype.update = function (creeps, game) {
         //				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
       }
       this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, this);
-
     }
   }
 };
 
+iceTowerProperties = function (tower) {
+  tower.damage = 5;
+  tower.radius = 150;
+  tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
+  tower.firerate = 800; // højt tal = langsommere skud
+  tower.bulletSpeed = 250; // højt tal = hurtigere skud
+  tower.upgradeCost = 50;
+}
+
+fireTowerProperties = function (tower) {
+  tower.damage = 3;
+  tower.radius = 100;
+  tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
+  tower.firerate = 1000;
+  tower.bulletSpeed = 450;
+  tower.upgradeCost = 10;
+}
+
 bulletHit = function (bunny, bullet) {
   bullet.kill();
-  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage();
+  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage(bullet.shootingTower.damage);
   if (destroyed) {
     bullet.shootingTower.kills++;
   }
 };
+
 bunny = function (index, game, points, startY, pi) {
   this.index = index;
   this.path = [];
@@ -593,6 +600,7 @@ bunny = function (index, game, points, startY, pi) {
   this.alive = true;
   this.score = 5;
   this.gold = 20;
+  //Sets the speed of the bunny
   var x = 0.001000;
   this.movementSpeed = x;
   //	var speed = 	1 / game.width/2;
@@ -617,9 +625,8 @@ bunny = function (index, game, points, startY, pi) {
   }
 };
 
-bunny.prototype.damage = function () {
-  //MAGICNUMBERS
-  this.health -= 5;
+bunny.prototype.damage = function (damage) {
+  this.health -= damage;
   if (this.health <= 0) {
     this.game.gameState.updateCurrency(this.score, this.gold);
     this.game.gameState.mew = this.game.add.audio('mew');
