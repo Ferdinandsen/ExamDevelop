@@ -1,48 +1,49 @@
 (function () {
   'use strict';
   var x;
+  var localGameState;
 
-  function Tower(index, game, towerX, towerY, towerBullets, towerType) {
+  //  function Tower(index, gameState, towerX, towerY, towerBullets, towerType) {
+  //
+  //    x = tower(index, gameState, towerX, towerY, towerBullets, towerType);
+  //
+  //  }
 
-    x = tower(index, game, towerX, towerY, towerBullets, towerType);
-
-  }
-
-  function tower(index, game, towerX, towerY, towerBullets, towerType) {
-
-    console.log('hej tower', game.waveTimer, x);
-
+  function Tower(index, gameState, towerX, towerY, towerBullets, towerType) {
+    localGameState = gameState;
+    var tower = {};
+    
     var towerSprite;
     var kills = 0;
     var upgradeAvailable = false;
     var index = index;
-    var game = game;
+    var gameState = gameState;
     var towerX = towerX;
     var towerY = towerY;
     var towerType = towerType;
     var bullets = towerBullets;
     var nextFire = 0;
-    var upgradePic = game.add.sprite(towerX, towerY, 'upgrade');
+    var upgradePic = gameState.game.add.sprite(towerX, towerY, 'upgrade');
     upgradePic.visible = false;
     var towerLevel = 1;
   
     //Towertype switch
     switch (towerType) {
-      case game.iceTower:
-        iceTowerProperties();
+      case gameState.iceTower:
+        iceTowerProperties(tower);
         break;
-      case game.fireTower:
+      case gameState.fireTower:
         fireTowerProperties();
         break;
     }
-    //    spriteSettings();
+    return tower;
+    //        spriteSettings();
   };
 
   var iceTowerProperties = function (tower) {
-    console.log('hej ice tower', tower);
     tower.damage = 5;
     tower.radius = 150;
-    tower.towerSprite = tower.game.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
+    tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.towerType);
     tower.firerate = 800; // højt tal = langsommere skud
     tower.bulletSpeed = 250; // højt tal = hurtigere skud
     tower.upgradeCost = 50;

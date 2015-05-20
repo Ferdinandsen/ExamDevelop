@@ -189,7 +189,9 @@
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType);
+//          this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
+          var tårn = createScope.game.gameState.ns.Tower(1, createScope.game.gameState, 50, 50, [0, 1, 2], 'tower_ice');
+//          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType);
           createScope.towers.push(tårn);
           console.log('ost', tårn);
           createScope.towerCount++;
@@ -429,12 +431,9 @@
         this.test2++;
         if (this.spawnAmount !== maxCreeps) {
           this.spawnAmount++;
-          console.log("spawner sprite", creepType);
           counter++;
           if (this.spawnAmount === maxCreeps) {
-            console.log("spawner boss", creepType);
             this.time.events.add(counter * delay, function () {
-              console.log("spawner boss", creepType);
               var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi, localGameState.bossCreep);
               testCreeps.push(newBunny);
               localGameState.creepcount++;
@@ -442,7 +441,6 @@
           }
           else {
             this.time.events.add(counter * delay, function () {
-              console.log("spawner kanin", creepType);
               var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi, creepType);
               testCreeps.push(newBunny);
               localGameState.creepcount++;

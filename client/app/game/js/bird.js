@@ -2,7 +2,6 @@
   'use strict';
   
   function Bird() {
-    console.log('pip');
   }
 
   window['pixione'] = window['pixione'] || {};
