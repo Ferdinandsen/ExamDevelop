@@ -20,9 +20,10 @@
 		loadResources: function () {
 			this.load.image('background_tile', '../assets/dirt_tile.png');
 			this.load.image('tower_tile', '../assets/buy_tower_tile.png');
-      this.load.image('upgrade', '../assets/upgrade.png');
+			this.load.image('upgrade', '../assets/upgrade.png');
 			this.load.image('tower_ice', '../assets/purchased_ice_tower_tile.png');
-      this.load.image('tower_ice2', '../assets/purchased_ice_tower_upgraded_tile.png');
+			this.load.image('tower_fire', '../assets/purchased_fire_tower_tile.png');
+			this.load.image('tower_ice2', '../assets/purchased_ice_tower_upgraded_tile.png');
 			this.load.image('path_tile', '../assets/path_tile2.png');
 			this.load.image('background', '../assets/background.png');
 			this.load.image('timebar', '../assets/timebar.png');
@@ -60,4 +61,4 @@
 	window['pixione'] = window['pixione'] || {};
 	window['pixione'].Preloader = Preloader;
 
-}());
+} ());
