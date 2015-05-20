@@ -15,7 +15,7 @@
       this.pi = 0;
       this.playerhealth = 1000;
       this.level = 0;
-      this.waveTimer = 11; // start tiden for creeps
+      this.waveTimer = 4; // start tiden for creeps
       this.creepSpawnTimer = 50;
       this.test = 0;
       this.spawnAmount = 0;
@@ -187,7 +187,7 @@
           createScope.updateGold(createScope.towerCost);
         } else {
           alert("You cannot place a tower there")
-            // todo todo todo}
+          // todo todo todo}
         }
       }
 
@@ -357,7 +357,6 @@
         createScope.towerBullets = game.add.group();
         createScope.towerBullets.enableBody = true;
         createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-
       }
 
 
@@ -399,21 +398,17 @@
       var delauy = 500;
       var counter = 0;
       var localGameState = this.game.gameState;
-      var testCreeps = this.creeps; 
+      var testCreeps = this.creeps;
       var finish = false;
       while (finish == false) { // spwan untill the amount is reached
         this.test2++;
-        if (this.spawnAmount !== (this.level * 5)) {
+        if (this.spawnAmount !== (this.level * 2)) {
           this.game.gameState.time.events.add(counter * delauy, function () {
-          var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi);
-          testCreeps.push(newBunny);
-             localGameState.creepcount++;
-            });
+            var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi);
+            testCreeps.push(newBunny);
+            localGameState.creepcount++;
+          });
           counter++;
-            //          if (this.test2 % 60 === 0) {
-            //            this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.creepStartYPos, this.pi))
-            //            console.log("spawned creep");
-          //          this.test2 = 0;
           this.spawnAmount++;
         } else {
           finish = true;
@@ -426,7 +421,7 @@
       if (this.test % 60 == 0) {
 
         if (this.waveTimer === 0) { //spwan next creepwave
-          this.waveTimer =21;
+          this.waveTimer = 21;
 
           this.nextLevel();
 
@@ -452,7 +447,7 @@
       }
       for (var i = 0; i < this.towers.length; i++) {
         this.towers[i].update(this.creeps, this.game);
-        
+
       }
 
       this.test++;
@@ -462,7 +457,7 @@
   window['pixione'] = window['pixione'] || {};
   window['pixione'].GameState = GameState;
 
-}());
+} ());
 
 tower = function (index, game, towerX, towerY, towerBullets, type) {
   this.kills = 0;
@@ -500,6 +495,13 @@ bulletHit = function (bunny, bullet) {
   bullet.kill();
   var destroyed = towerScope.game.gameState.creeps[bunny.index].damage();
   if (destroyed) {
+    towerScope.game.gameState.creeps.splice(bunny.index, 1);
+
+    for (var i = bunny.index; i < towerScope.game.gameState.creeps.length; i++) {
+      towerScope.game.gameState.creeps[i].index--;
+      towerScope.game.gameState.creeps[i].creepSprite.index--;
+    }
+    this.game.gameState.creepcount--;
     bullet.shootingTower.kills++;
   }
 };
@@ -534,8 +536,8 @@ tower.prototype.update = function (creeps, game) {
   this.game.gameState.towerBullets.createMultiple(1, 'bullet');
   for (var i = 0; i < creeps.length; i++) {
     if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
-       var bullet = this.bullets.getFirstExists(false);
-       if (creeps[i].alive && this.game.time.now > this.nextFire) {
+      var bullet = this.bullets.getFirstExists(false);
+      if (creeps[i].alive && this.game.time.now > this.nextFire) {
         this.nextFire = this.game.time.now + this.firerate;
         game.physics.arcade.enable(bullet);
         bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
@@ -549,7 +551,7 @@ tower.prototype.update = function (creeps, game) {
         //				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
       }
       this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, this);
-      
+
     }
   }
 };
@@ -565,6 +567,7 @@ bunny = function (index, game, points, startY, pi) {
   this.health = this.game.gameState.level * 5;
   this.alive = true;
   this.score = 5;
+  this.maxHealth = this.health;
   this.gold = 20;
   var x = 0.001000;
   this.movementSpeed = x;
@@ -573,13 +576,15 @@ bunny = function (index, game, points, startY, pi) {
 
   this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
   this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
-        
+
   this.creepSprite.anchor.set(0);
   this.creepSprite.scale.setTo(0.7, 0.7);
   this.creepSprite.index = index;
   this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
   this.creepSprite.animations.play('move', 10, true);
-  
+  this.creepSprite.healthbar = this.game.add.sprite(0, startY, 'healthbar');
+  this.creepSprite.healthbar.cropEnabled = true;
+
   for (var i = 0; i <= 1; i += this.movementSpeed) {
     var px = this.game.math.linearInterpolation(this.points.x, i);
     var py = this.game.math.linearInterpolation(this.points.y, i);
@@ -593,10 +598,12 @@ bunny = function (index, game, points, startY, pi) {
 bunny.prototype.damage = function () {
   //MAGICNUMBERS
   this.health -= 5;
+  this.creepSprite.healthbar.width = (this.health / this.maxHealth) * this.creepSprite.healthbar.width;
   if (this.health <= 0) {
     this.game.gameState.updateCurrency(this.score, this.gold);
-   this.game.gameState.mew = this.game.add.audio('mew');
-      this.game.gameState.mew.play('', 0, 9, false);
+    this.game.gameState.mew = this.game.add.audio('mew');
+    this.game.gameState.mew.play('', 0, 9, false);
+    this.creepSprite.healthbar.kill();
     return this.kill();
   }
   return false;
@@ -610,12 +617,23 @@ bunny.prototype.kill = function () {
 
 bunny.prototype.update = function () {
   this.gametime++;
+  this.creepSprite.healthbar.x = this.creepSprite.x;
+  this.creepSprite.healthbar.y = this.creepSprite.y - 10;
   this.creepSprite.x = this.path[this.pi].x;
   this.creepSprite.y = this.path[this.pi].y;
   this.pi++;
   if (this.pi >= this.path.length) {
+    this.creepSprite.healthbar.kill();
     this.game.gameState.playerhealth--;
+    console.log(this.index);
+    this.game.gameState.creeps.splice(this.index, 1);
+
+    for (var i = this.index; i < this.game.gameState.creeps.length; i++) {
+      this.game.gameState.creeps[i].index--;
+      this.game.gameState.creeps[i].creepSprite.index--;
+    }
     this.kill();
+    this.game.gameState.creepcount--;
     this.game.gameState.updateHealth();
     if (this.game.gameState.playerhealth <= 0) {
       this.game.gameState.gameOver();

@@ -20,15 +20,16 @@
 		loadResources: function () {
 			this.load.image('background_tile', '../assets/dirt_tile.png');
 			this.load.image('tower_tile', '../assets/buy_tower_tile.png');
-      this.load.image('upgrade', '../assets/upgrade.png');
+			this.load.image('upgrade', '../assets/upgrade.png');
 			this.load.image('tower_ice', '../assets/purchased_ice_tower_tile.png');
-      this.load.image('tower_ice2', '../assets/purchased_ice_tower_upgraded_tile.png');
+			this.load.image('tower_ice2', '../assets/purchased_ice_tower_upgraded_tile.png');
 			this.load.image('path_tile', '../assets/path_tile2.png');
 			this.load.image('background', '../assets/background.png');
 			this.load.image('timebar', '../assets/timebar.png');
 			this.load.image('buttonmask', '../assets/buttonmask.png');
 			this.load.image("enemy", "../assets/enemy.png");
 			this.load.image("bullet", "../assets/bullet.png");
+			this.load.spritesheet('healthbar', '../assets/healthbar.png', 400, 50);
 			this.load.spritesheet('buttons', '../assets/buttons.png', 400, 50);
 			this.load.spritesheet('menubuttons', '../assets/menubuttons.bmp', 512, 1024);
 			this.load.atlas('worm', 'assets/worm.png', '../assets/worm.json');
@@ -60,4 +61,4 @@
 	window['pixione'] = window['pixione'] || {};
 	window['pixione'].Preloader = Preloader;
 
-}());
+} ());
