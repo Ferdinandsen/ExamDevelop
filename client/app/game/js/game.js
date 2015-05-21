@@ -1,12 +1,12 @@
 (function () {
   'use strict';
-
   function GameState() {
   }
 
   GameState.prototype = {
     init: function () {
-
+      this.ns = window['pixione'];
+      this.ns.Bird();
       this.gametime = 0;
       this.creeps = [];
       this.creepcount = 0;
@@ -14,14 +14,12 @@
       this.pi = 0;
       this.playerhealth = 1000;
       this.level = 0;
-      this.waveTimer = 11; // start tiden for creeps
+      this.waveTimer = 4; // start tiden for creeps
       this.creepSpawnTimer = 50;
       this.test = 0;
       this.spawnAmount = 0;
       this.towerCost = 30;
-      this.canAffordIceTower = true;
-      console.log(this);
-      console.log(this.game);
+      this.canAffordTower = true;
     },
 
     create: function () {
@@ -39,10 +37,15 @@
       this.towers = [];
       var towers = this.towers;
       var towerCount = this.towerCount;
-
+      
+      //Tower typenames
       this.iceTower = 'tower_ice';
       this.fireTower = 'tower_fire';
-      this.lightningTower = 'lightning_tower';
+      this.lightningTower = 'tower_lightning';
+
+      //Creep typenames
+      this.bunnyCreep = 'rabbit';
+      this.bossCreep = 'boss';
 
       this.bgTileNumber = 1;
       this.pathTileNumber = 2;
@@ -52,7 +55,7 @@
       var bgTileNumber = this.bgTileNumber,
         pathTileNumber = this.pathTileNumber,
         towerTileNumber = this.towerTileNumber,
-        iceTower = this.iceTowerTileNumber;
+        iceTower = this.iceTowerTileNumber; // <------------------------------------------------ ?????
 
       this.height = this.game.height;
       this.width = this.game.width;
@@ -67,7 +70,7 @@
       var mX = 0,
         mY = 0;
 
-      // 50 er tiles størrelser
+
       this.tileMatrix = [];
       var tileMatrix = this.tileMatrix;
       while (tileMatrix.push(new Array(rows)) < cols);
@@ -78,13 +81,14 @@
       var levelText;
       var waveText;
       var menuBarText;
-
+      //Set Starting gold amount
       this.gold = 100;
 
       var isGameOver = false;
       var music;
       var mew;
-
+      
+      // 50 er tiles størrelse
       this.tileSize = 50;
       var tileSize = this.tileSize;
 
@@ -100,14 +104,16 @@
         this.gold -= gold;
         goldText.setText('Gold: ' + this.gold);
         if (this.gold >= this.towerCost) {
-          this.canAffordIceTower = true;
+          this.canAffordTower = true;
         } else {
-          this.canAffordIceTower = false;
+          this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
-          this.towers[i].checkForUpgrade();
+          console.log('GameState, localTower.checkForUpgrade');
+          var localTower = this.towers[i];
+          localTower.checkForUpgrade(localTower);//<-----------------------------------------------the fuck ? sender sig selv ind i sig selv ? callback?
         }
-      }
+      };
 
       this.updateCurrency = function (score, gold) {
         this.gold += gold;
@@ -115,32 +121,37 @@
         scoreText.setText('Score: ' + this.highscore);
         goldText.setText('Gold: ' + this.gold);
         if (this.gold >= this.towerCost) {
-          this.canAffordIceTower = true;
+          this.canAffordTower = true;
         } else {
-          this.canAffordIceTower = false;
+          this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
-          this.towers[i].checkForUpgrade();
+          var localTower = this.towers[i];
+          localTower.checkForUpgrade(localTower);
         }
       };
 
       this.updateHealth = function () {
         healthText.setText('Health: ' + this.playerhealth);
-      }
+      };
+
       this.updateLevelText = function () {
         levelText.setText('Level: ' + this.level);
-      }
+      };
+
       this.getFrames = function (seconds) {
         return seconds * 60;
-      }
+      };
+
       this.updateWaveText = function () {
         waveText.setText('Next wave in: ' + this.waveTimer);
-      }
+      };
+
       this.nextLevel = function () {
         this.spawnAmount = 0;
         this.level++;
         this.updateLevelText();
-      }
+      };
 
       function placeTowerTile(x, y, xx, yy, game) {
         var towerTile = game.add.button(pX, pY, 'tower_tile', isBgTile, this);
@@ -149,7 +160,7 @@
         bgTile.TileMX = mX;
         bgTile.TileMY = mY;
         tileMatrix[mX][mY] = bgTileNumber;
-      }
+      };
 
       function placeBgTile(pX, pY, mX, mY, game) {
         var bgTile = game.add.button(pX, pY, 'background_tile', null, this);
@@ -158,7 +169,7 @@
         bgTile.TileMX = mX;
         bgTile.TileMY = mY;
         tileMatrix[mX][mY] = bgTileNumber;
-      }
+      };
 
       function placePathTile(pX, pY, mX, mY, game) {
         var pathTile = game.add.button(pX, pY, 'path_tile', null, this);
@@ -171,7 +182,7 @@
           points.x.push(pX);
           points.y.push(pY);
         }
-      }
+      };
 
       function placeTowerTile(pX, pY, mX, mY, game) {
         var towerTile = game.add.button(pX, pY, 'tower_tile', this);
@@ -180,20 +191,20 @@
         towerTile.TileMX = mX;
         towerTile.TileMY = mY;
         tileMatrix[mX][mY] = towerTileNumber;
-      }
+      };
 
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          createScope.towers.push(new tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType));
+          var aTower = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game.gameState, pX, pY, createScope.towerBullets, towerType);
+          createScope.towers.push(aTower);
           createScope.towerCount++;
           createScope.updateGold(createScope.towerCost);
         } else {
           alert("You cannot place a tower there")
           // todo todo todo}
         }
-      }
-
+      };
 
       function insertBackground(game) {
         for (var pY = 0; pY < height; pY += tileSize) {
@@ -204,10 +215,9 @@
           }
           mY++;
         }
-      }
+      };
 
       function insertPath(game) {
-        //RANDOM NUMBERS
         var pY = height / 2; //459 med tiles 
         var randomNumber;
         mX = 0;
@@ -244,7 +254,7 @@
             direction = east;
           }
         }
-      }
+      };
 
       function insertTowers(game) {
         for (var pY = 0; pY < height; pY += tileSize) {
@@ -267,7 +277,7 @@
             }
           }
         }
-      }
+      };
 
       function insertIceTowersToBuy(game) {
         var x = 600;
@@ -276,7 +286,7 @@
         var iceTowerMenu = game.add.button(x, y, towerType, null, this);
         var sprite = createScope.game.add.sprite(x, y, towerType);
         initializeSpriteproperties(sprite, x, y, towerType);
-      }
+      };
 
       function insertFireTowersToBuy(game) {
         var x = 700;
@@ -285,7 +295,16 @@
         var fireTowerMenu = game.add.button(x, y, towerType, null, this);
         var sprite = createScope.game.add.sprite(x, y, towerType);
         initializeSpriteproperties(sprite, x, y, towerType);
-      }
+      };
+        
+        function insertLightningTowersToBuy(game) {
+        var x = 800;
+        var y = 70;
+        var towerType = game.gameState.lightningTower;
+        var lightningTowerMenu = game.add.button(x, y, towerType, null, this);
+        var sprite = createScope.game.add.sprite(x, y, towerType);
+        initializeSpriteproperties(sprite, x, y, towerType);
+      };
 
       function initializeSpriteproperties(sprite, x, y, towerType) {
         sprite.inputEnabled = true;
@@ -295,16 +314,15 @@
         sprite.posY = y;
         sprite.events.onDragStart.add(startDrag, this);
         sprite.events.onDragStop.add(stopDrag, this);
-        console.log(sprite);
-      }
+      };
 
       function startDrag(theSprite) {
-        if (!createScope.canAffordIceTower) {
+        if (!createScope.canAffordTower) {
           theSprite.inputEnabled = false;
         } else {
           theSprite.inputEnabled = true;
         }
-      }
+      };
 
       function stopDrag(theSprite) {
         var xPos = createScope.game.input.x;
@@ -316,42 +334,42 @@
         placeTowerByMouse(pX, pY, mX, mY, theSprite.type);
         theSprite.x = theSprite.posX;
         theSprite.y = theSprite.posY;
-      }
+      };
 
       function initializeHighscore() {
         scoreText = createScope.game.add.text(400, 20, 'Score: ' + createScope.highscore, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeGold() {
         goldText = createScope.game.add.text(200, 20, 'Gold: ' + createScope.gold, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeHealth() {
         healthText = createScope.game.add.text(600, 20, 'Health: ' + createScope.playerhealth, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeLevel() {
         levelText = createScope.game.add.text(800, 20, 'Level: ' + createScope.level, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeTimer() {
         waveText = createScope.game.add.text(1000, 20, 'Next wave in : ' + createScope.waveTimer, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeMenuBar() {
         menuBarText = createScope.game.add.text(0, 110, '________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', {
@@ -362,25 +380,24 @@
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function getMatrixPosByPixel(pixel) {
         return pixel / tileSize;
-      }
+      };
 
       function towerBullets() {
         createScope.towerBullets = game.add.group();
         createScope.towerBullets.enableBody = true;
         createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-
-      }
-
+      };
 
       insertBackground(game);
       insertPath(this.game);
       insertTowers(this.game);
       insertIceTowersToBuy(this.game);
       insertFireTowersToBuy(this.game);
+      insertLightningTowersToBuy(this.game);
       initializeGold();
       initializeHighscore();
       initializeHealth();
@@ -389,13 +406,14 @@
       initializeMenuBar();
       towerBullets();
 
+      //music
       music = this.game.add.audio('bgmusic');
       music.play('', 0, 1, true);
       this.gameOver = function () {
         isGameOver = true;
         music.stop();
         game.state.start('over', true, false, this.highscore);
-      }
+      };
     },
 
     getPixelPosByMatrixPos: function (koordinat) {
@@ -412,65 +430,68 @@
 
     spawnCreeps: function () {
       this.test2 = 0;
-      var delauy = 500;
+      var delay = 500;
       var counter = 0;
       var localGameState = this;
       var testCreeps = this.creeps;
       var finish = false;
-      while (finish == false) { // spwan untill the amount is reached
+      var maxCreeps = this.level * 5;
+      var creepType = this.bunnyCreep;
+
+      while (!finish) { // spwan untill the amount is reached
         this.test2++;
-        if (this.spawnAmount !== (this.level * 5)) {
-          this.time.events.add(counter * delauy, function () {
-            var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi);
-            testCreeps.push(newBunny);
-            localGameState.creepcount++;
-          });
-          counter++;
-          //          if (this.test2 % 60 === 0) {
-          //            this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.creepStartYPos, this.pi))
-          //            console.log("spawned creep");
-          //          this.test2 = 0;
+        if (this.spawnAmount !== maxCreeps) {
           this.spawnAmount++;
+          counter++;
+          if (this.spawnAmount === maxCreeps) {
+            this.time.events.add(counter * delay, function () {
+              var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi, localGameState.bossCreep);
+              testCreeps.push(newBunny);
+              localGameState.creepcount++;
+            });
+          }
+          else {
+            this.time.events.add(counter * delay, function () {
+              var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi, creepType);
+              testCreeps.push(newBunny);
+              localGameState.creepcount++;
+            });
+          }
         } else {
           finish = true;
         }
-
-
       }
     },
+
     update: function () {
       if (this.test % 60 == 0) {
 
-        if (this.waveTimer === 0) { //spwan next creepwave
+        if (this.waveTimer === 0) { //spawn next creepwave
           this.waveTimer = 21;
-
           this.nextLevel();
-
           this.spawnCreeps();
 
           return;
-        } else {
-
+        }
+        else {
           this.waveTimer--;
         }
-
         this.updateWaveText();
       }
+
       if (this.creepStartYPos === null) {
         this.getCreepStartYPos();
       }
 
-
       for (var i = 0; i < this.creeps.length; i++) {
         if (this.creeps[i].alive) {
           this.creeps[i].update();
+
         }
       }
       for (var i = 0; i < this.towers.length; i++) {
-        this.towers[i].update(this.creeps, this.game);
-
+        this.towers[i].update(this.creeps, this.towers[i]);
       }
-
       this.test++;
     }
   };
@@ -480,133 +501,58 @@
 
 } ());
 
-tower = function (index, game, towerX, towerY, towerBullets, towerType) {
-  towerScope = this;
-  this.kills = 0;
-  this.upgradeAvailable = false;
-  this.index = index;
-  this.game = game;
-  this.towerX = towerX;
-  this.towerY = towerY;
-  this.towerType = towerType;
-  this.bullets = towerBullets;
-  this.nextFire = 0;
-  this.upgradePic = this.game.add.sprite(this.towerX, this.towerY, 'upgrade');
-  this.upgradePic.visible = false;
-  this.towerLevel = 1;
-  
-  //Towertype switch
-  switch (towerType) {
-    case this.game.gameState.iceTower:
-      this.damage = 5;
-      this.radius = 150;
-      this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType);
-      this.firerate = 800; // højt tal = langsommere skud
-      this.bulletSpeed = 250; // højt tal = hurtigere skud
-      this.upgradeCost = 50;
-      break;
-    case this.game.gameState.fireTower:
-      this.damage = 3;
-      this.radius = 100;
-      this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType);
-      this.firerate = 1000;
-      this.bulletSpeed = 250;
-      this.upgradeCost = 10;
-      break;
-  }
-  this.spriteSettings();
-};
 
-tower.prototype.spriteSettings = function () {
-  this.towerSprite.anchor.set(0);
-  this.towerSprite.inputEnabled = true;
-  this.towerSprite.events.onInputDown.add(this.upgrade, this);
-  //	this.towerSprite.scale(1,1);
-  this.game.physics.arcade.enable(this.towerSprite);
-}
-tower.prototype.bulletOut = function (bullet) {
-  bullet.kill();
-}
+bunny = function (index, game, points, startY, pi, creepType) {
 
-tower.prototype.upgrade = function () {
-  if (this.upgradeAvailable && this.game.gameState.gold >= this.upgradeCost) {
-    this.towerLevel++;
-    this.firerate = this.firerate / 2;
-    this.radius = this.radius * 2;
-    this.damage++;
-    this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType + this.towerLevel);
-    this.upgradePic.kill();
-    this.upgradeAvailable = false;
-    this.game.gameState.updateGold(this.upgradeCost);
-  }
-}
-
-tower.prototype.checkForUpgrade = function () {
-  if (this.game.gameState.gold >= this.upgradeCost && this.towerLevel === 1) {
-    this.upgradeAvailable = true;
-    this.upgradePic.visible = true;
-  } else {
-    this.upgradePic.visible = false;
-  }
-}
-
-tower.prototype.update = function (creeps, game) {
-  this.game.gameState.towerBullets.createMultiple(1, 'bullet');
-  for (var i = 0; i < creeps.length; i++) {
-    if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
-      var bullet = this.bullets.getFirstExists(false);
-      if (creeps[i].alive && this.game.time.now > this.nextFire) {
-        this.nextFire = this.game.time.now + this.firerate;
-        game.physics.arcade.enable(bullet);
-        bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
-        bullet.anchor.set(0.5, 0.5);
-        bullet.scale.set(0.5, 0.5);
-        bullet.body.setSize(20, 20);
-        bullet.shootingTower = this;
-        bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
-        bullet.checkWorldBounds = true;
-        bullet.events.onOutOfBounds.add(this.bulletOut, this);
-        //				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
-      }
-      this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, this);
-
-    }
-  }
-};
-
-bulletHit = function (bunny, bullet) {
-  bullet.kill();
-  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage();
-  if (destroyed) {
-    bullet.shootingTower.kills++;
-  }
-};
-bunny = function (index, game, points, startY, pi) {
   this.index = index;
   this.path = [];
   this.startY = startY;
   this.startX = 0;
   this.points = points;
+  this.creepType = creepType;
   this.pi = pi;
   this.game = game;
-  this.health = this.game.gameState.level * 5;
   this.alive = true;
-  this.score = 5;
-  this.gold = 20;
-  var x = 0.001000;
-  this.movementSpeed = x;
-  //	var speed = 	1 / game.width/2;
   this.game.physics.enable(this, Phaser.Physics.ARCADE);
 
-  this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
-  this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+
+  switch (creepType) {
+    case this.game.gameState.bunnyCreep:
+      this.health = this.game.gameState.level * 5;
+      this.score = 5;
+      this.gold = 20;
+      //Sets the speed of the bunny
+      var x = 0.001000;
+      this.movementSpeed = x;
+      this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'rabbit');
+      this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+      this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
+      this.creepSprite.animations.play('move', 10, true);
+      this.creepSprite.scale.setTo(0.7, 0.7);
+      break;
+
+    case this.game.gameState.bossCreep:
+      this.health = this.game.gameState.level * 10;
+      this.score = 50;
+      this.gold = 100;
+      //Sets the speed of the bunny
+      var x = 0.002000;
+      this.movementSpeed = x;
+      this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'bossRabbit');
+      this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+      this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
+      this.creepSprite.animations.play('move', 10, true);
+      this.creepSprite.scale.setTo(0.7, 0.7);
+      break;
+  }
 
   this.creepSprite.anchor.set(0);
-  this.creepSprite.scale.setTo(0.7, 0.7);
   this.creepSprite.index = index;
-  this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
-  this.creepSprite.animations.play('move', 10, true);
-
+  
+  // make path
+  this.generateMovementPath();
+};
+bunny.prototype.generateMovementPath = function () {
   for (var i = 0; i <= 1; i += this.movementSpeed) {
     var px = this.game.math.linearInterpolation(this.points.x, i);
     var py = this.game.math.linearInterpolation(this.points.y, i);
@@ -615,11 +561,9 @@ bunny = function (index, game, points, startY, pi) {
       y: py
     });
   }
-};
-
-bunny.prototype.damage = function () {
-  //MAGICNUMBERS
-  this.health -= 5;
+}
+bunny.prototype.damage = function (damage) {
+  this.health -= damage;
   if (this.health <= 0) {
     this.game.gameState.updateCurrency(this.score, this.gold);
     this.game.gameState.mew = this.game.add.audio('mew');
