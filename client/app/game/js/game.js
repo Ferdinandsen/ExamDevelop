@@ -199,8 +199,8 @@
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game.gameState, pX, pY, createScope.towerBullets, 'tower_ice');
-          createScope.towers.push(tårn);
+          var aTower = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game.gameState, pX, pY, createScope.towerBullets, towerType);
+          createScope.towers.push(aTower);
           createScope.towerCount++;
           createScope.updateGold(createScope.towerCost);
         } else {

@@ -66,7 +66,7 @@ case gameState.iceTower:
         Tower.prototype.iceTowerProperties(tower);
         break;
       case gameState.fireTower:
-        Tower.prototype.fireTowerProperties();
+        Tower.prototype.fireTowerProperties(tower);
         break;
     }
       Tower.prototype.spriteSettings(tower);
@@ -80,20 +80,23 @@ Tower.prototype.iceTowerProperties = function (tower) {
   tower.nextFire = 0;
   tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
   tower.firerate = 800; // højt tal = langsommere skud
-  tower.bulletSpeed = 250; // højt tal = hurtigere skud
+  tower.bulletSpeed = 450; // højt tal = hurtigere skud
   tower.upgradeCost = 50;
   tower.towerLevel = 1;
   tower.upgradeAvailable = false;
 };
 
 Tower.prototype.fireTowerProperties = function (tower) {
-  console.log('fire tower...', tower);
+  console.log('fire tower');
   tower.damage = 3;
-  tower.radius = 100;
-  Tower.towerSprite = tower.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
-  Tower.firerate = 1000;
-  Tower.bulletSpeed = 450;
-  Tower.upgradeCost = 10;
+  tower.radius = 200;
+  tower.nextFire = 0;
+  tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
+  tower.firerate = 1000;
+  tower.bulletSpeed = 450;
+  tower.upgradeCost = 40;
+  tower.towerLevel = 1;
+  tower.upgradeAvailable = false;
 };
 
 Tower.prototype.spriteSettings = function (tower) {
