@@ -27,6 +27,7 @@
       upgradePic: localGameState.game.add.sprite(towerX, towerY, 'upgrade'),
      
 
+
     checkForUpgrade: function (tower) {
       if (localGameState.gold >= tower.upgradeCost && tower.towerLevel === 1) {
         tower.upgradeAvailable = true;
@@ -61,8 +62,7 @@
 
     //    //Towertype switch
     switch (localType) {
-
-      case gameState.iceTower:
+case gameState.iceTower:
         Tower.prototype.iceTowerProperties(tower);
         break;
       case gameState.fireTower:
