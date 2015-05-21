@@ -1,3 +1,4 @@
+'use strict';
 angular.module('examAppopenshiftApp')
     .controller('GameCtrl', function ($scope) {
        mainGame.startGame(); 

@@ -2,12 +2,11 @@
   'use strict';
 
   function GameState() {
-    console.log(this);
   }
 
   GameState.prototype = {
     init: function () {
-      this.game.wormSprite = {};
+
       this.gametime = 0;
       this.creeps = [];
       this.creepcount = 0;
@@ -15,26 +14,35 @@
       this.pi = 0;
       this.playerhealth = 1000;
       this.level = 0;
-      this.waveTimer = 11;
+      this.waveTimer = 11; // start tiden for creeps
       this.creepSpawnTimer = 50;
       this.test = 0;
       this.spawnAmount = 0;
       this.towerCost = 30;
       this.canAffordIceTower = true;
+      console.log(this);
+      console.log(this.game);
     },
 
     create: function () {
-      this.game.gameState = this;
-      var createScope = this;
       var game = this.game;
+      game.physics.setBoundsToWorld();
+      game.gameState = this;
+      var createScope = this;
+      
       //Baggrunds farve
-      this.game.stage.backgroundColor = '#ffffff';
-      this.game.stage.disableVisibilityChange = true;
+      game.stage.backgroundColor = '#ffffff';
+      game.stage.disableVisibilityChange = true;
 
+      //Tower variabler
       this.towerCount = 0;
       this.towers = [];
       var towers = this.towers;
       var towerCount = this.towerCount;
+
+      this.iceTower = 'tower_ice';
+      this.fireTower = 'tower_fire';
+      this.lightningTower = 'lightning_tower';
 
       this.bgTileNumber = 1;
       this.pathTileNumber = 2;
@@ -75,6 +83,7 @@
 
       var isGameOver = false;
       var music;
+      var mew;
 
       this.tileSize = 50;
       var tileSize = this.tileSize;
@@ -88,26 +97,33 @@
       this.highscore = 0;
 
       this.updateGold = function (gold) {
-        createScope.gold -= gold;
-        goldText.setText('Gold: ' + createScope.gold);
-        if (createScope.gold >= createScope.towerCost) {
-          createScope.canAffordIceTower = true;
+        this.gold -= gold;
+        goldText.setText('Gold: ' + this.gold);
+        if (this.gold >= this.towerCost) {
+          this.canAffordIceTower = true;
         } else {
-          createScope.canAffordIceTower = false;
+          this.canAffordIceTower = false;
+        }
+        for (var i = 0; i < this.towers.length; i++) {
+          this.towers[i].checkForUpgrade();
         }
       }
 
       this.updateCurrency = function (score, gold) {
-        createScope.gold += gold;
-        createScope.highscore += score;
-        scoreText.setText('Score: ' + createScope.highscore);
-        goldText.setText('Gold: ' + createScope.gold);
-        if (createScope.gold >= createScope.towerCost) {
-          createScope.canAffordIceTower = true;
+        this.gold += gold;
+        this.highscore += score;
+        scoreText.setText('Score: ' + this.highscore);
+        goldText.setText('Gold: ' + this.gold);
+        if (this.gold >= this.towerCost) {
+          this.canAffordIceTower = true;
         } else {
-          createScope.canAffordIceTower = false;
+          this.canAffordIceTower = false;
+        }
+        for (var i = 0; i < this.towers.length; i++) {
+          this.towers[i].checkForUpgrade();
         }
       };
+
       this.updateHealth = function () {
         healthText.setText('Health: ' + this.playerhealth);
       }
@@ -121,7 +137,6 @@
         waveText.setText('Next wave in: ' + this.waveTimer);
       }
       this.nextLevel = function () {
-        console.log("Next LEVEL");
         this.spawnAmount = 0;
         this.level++;
         this.updateLevelText();
@@ -134,10 +149,6 @@
         bgTile.TileMX = mX;
         bgTile.TileMY = mY;
         tileMatrix[mX][mY] = bgTileNumber;
-      }
-
-      function clickIceTower() {
-        console.log("Clicked on ice tower");
       }
 
       function placeBgTile(pX, pY, mX, mY, game) {
@@ -171,16 +182,15 @@
         tileMatrix[mX][mY] = towerTileNumber;
       }
 
-      function placeTowerByMouse(pX, pY, mX, mY) {
+      function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          var newTower = new tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets);
-          createScope.towers.push(newTower);
+          createScope.towers.push(new tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType));
           createScope.towerCount++;
           createScope.updateGold(createScope.towerCost);
         } else {
           alert("You cannot place a tower there")
-            // todo todo todo}
+          // todo todo todo}
         }
       }
 
@@ -259,44 +269,53 @@
         }
       }
 
-      function insertTowersToBuy(game) {
-        var iceTowerMenu = game.add.button(600, 70, 'tower_ice', null, this);
-        var sprite = createScope.game.add.sprite(600, 70, 'tower_ice');
-        sprite.inputEnabled = true;
-        sprite.input.enableDrag();
-        sprite.events.onDragStart.add(startDrag, this);
-        sprite.events.onDragStop.add(stopDrag, this);
+      function insertIceTowersToBuy(game) {
+        var x = 600;
+        var y = 70;
+        var towerType = game.gameState.iceTower;
+        var iceTowerMenu = game.add.button(x, y, towerType, null, this);
+        var sprite = createScope.game.add.sprite(x, y, towerType);
+        initializeSpriteproperties(sprite, x, y, towerType);
       }
 
-      //      function dragIceTower(iceTowerMenu) {
-      //        var sprite = createScope.game.add.sprite(1200, 20, 'tower_ice');
-      //        sprite.inputEnabled = true;
-      //        sprite.input.enableDrag();
-      //        sprite.events.onDragStart.add(startDrag, this);
-      //        sprite.events.onDragStop.add(stopDrag, this);
-      //      }
+      function insertFireTowersToBuy(game) {
+        var x = 700;
+        var y = 70;
+        var towerType = game.gameState.fireTower;
+        var fireTowerMenu = game.add.button(x, y, towerType, null, this);
+        var sprite = createScope.game.add.sprite(x, y, towerType);
+        initializeSpriteproperties(sprite, x, y, towerType);
+      }
+
+      function initializeSpriteproperties(sprite, x, y, towerType) {
+        sprite.inputEnabled = true;
+        sprite.input.enableDrag();
+        sprite.type = towerType;
+        sprite.posX = x;
+        sprite.posY = y;
+        sprite.events.onDragStart.add(startDrag, this);
+        sprite.events.onDragStop.add(stopDrag, this);
+        console.log(sprite);
+      }
+
       function startDrag(theSprite) {
         if (!createScope.canAffordIceTower) {
-           theSprite.inputEnabled = false;
-          console.log("disabler drag");
-        }
-        else{
-         theSprite.inputEnabled = true;
+          theSprite.inputEnabled = false;
+        } else {
+          theSprite.inputEnabled = true;
         }
       }
 
       function stopDrag(theSprite) {
         var xPos = createScope.game.input.x;
         var yPos = createScope.game.input.y;
-        console.log("x: " + createScope.game.input.x)
-        console.log("y: " + createScope.game.input.y)
-        var pX = Math.floor(xPos / 50) * 50;
-        var pY = Math.floor(yPos / 50) * 50;
-        var mX = pX / 50;
-        var mY = pY / 50;
-        placeTowerByMouse(pX, pY, mX, mY);
-        theSprite.x = 600;
-        theSprite.y = 70;
+        var pX = Math.floor(xPos / tileSize) * tileSize;
+        var pY = Math.floor(yPos / tileSize) * tileSize;
+        var mX = pX / tileSize;
+        var mY = pY / tileSize;
+        placeTowerByMouse(pX, pY, mX, mY, theSprite.type);
+        theSprite.x = theSprite.posX;
+        theSprite.y = theSprite.posY;
       }
 
       function initializeHighscore() {
@@ -333,12 +352,13 @@
           fill: '#ffffff'
         });
       }
+
       function initializeMenuBar() {
         menuBarText = createScope.game.add.text(0, 110, '________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-         menuBarText = createScope.game.add.text(0, 40, '--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------', {
+        menuBarText = createScope.game.add.text(0, 40, '--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------', {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
@@ -352,12 +372,15 @@
         createScope.towerBullets = game.add.group();
         createScope.towerBullets.enableBody = true;
         createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
+
       }
+
 
       insertBackground(game);
       insertPath(this.game);
       insertTowers(this.game);
-      insertTowersToBuy(this.game);
+      insertIceTowersToBuy(this.game);
+      insertFireTowersToBuy(this.game);
       initializeGold();
       initializeHighscore();
       initializeHealth();
@@ -366,25 +389,8 @@
       initializeMenuBar();
       towerBullets();
 
-
-      //			function wormSpriteOut(wormSprite) {
-      //				//  Move the alien to the top of the screen again
-      //				wormSprite.reset(-32, game.world.centerY);
-      //				wormSprite.body.velocity.setTo(40, 0);
-      //			}
-
       music = this.game.add.audio('bgmusic');
       music.play('', 0, 1, true);
-
-      //            game.wormSprite = game.add.sprite(0, game.world.centerY, 'worm');
-      //            game.wormSprite.anchor.set(0.5);
-      //            game.physics.arcade.enable(game.wormSprite);
-      //            game.wormSprite.animations.add('run', Phaser.Animation.generateFrameNames('kriecht e', 0, 6, '', 4), 30, true);
-      //            game.wormSprite.animations.play('run', 10, true);
-      //            game.wormSprite.body.velocity.setTo(40, 0);
-      //            game.wormSprite.checkWorldBounds = true;
-      //            game.wormSprite.events.onOutOfBounds.add(wormSpriteOut, this);
-
       this.gameOver = function () {
         isGameOver = true;
         music.stop();
@@ -405,24 +411,28 @@
     },
 
     spawnCreeps: function () {
-      console.log("WHILE CALLED")
       this.test2 = 0;
+      var delauy = 500;
+      var counter = 0;
+      var localGameState = this;
+      var testCreeps = this.creeps;
       var finish = false;
       while (finish == false) { // spwan untill the amount is reached
-        console.log("while");
         this.test2++;
         if (this.spawnAmount !== (this.level * 5)) {
-          if (this.test2 % 60 === 0) {
-            this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.creepStartYPos, this.pi))
-            console.log("spawned creep");
-
-            //          this.test2 = 0;
-            this.creepcount++;
-            this.spawnAmount++;
-          }
+          this.time.events.add(counter * delauy, function () {
+            var newBunny = new bunny(localGameState.creepcount, localGameState.game, localGameState.points, localGameState.creepStartYPos, localGameState.pi);
+            testCreeps.push(newBunny);
+            localGameState.creepcount++;
+          });
+          counter++;
+          //          if (this.test2 % 60 === 0) {
+          //            this.creeps.push(new bunny(this.creepcount, this.game, this.points, this.creepStartYPos, this.pi))
+          //            console.log("spawned creep");
+          //          this.test2 = 0;
+          this.spawnAmount++;
         } else {
           finish = true;
-          console.log("finished");
         }
 
 
@@ -432,11 +442,12 @@
       if (this.test % 60 == 0) {
 
         if (this.waveTimer === 0) { //spwan next creepwave
-          this.waveTimer = 11;
+          this.waveTimer = 21;
 
           this.nextLevel();
 
           this.spawnCreeps();
+
           return;
         } else {
 
@@ -467,89 +478,143 @@
   window['pixione'] = window['pixione'] || {};
   window['pixione'].GameState = GameState;
 
-}());
+} ());
 
-tower = function (index, game, towerX, towerY, towerBullets) {
+tower = function (index, game, towerX, towerY, towerBullets, towerType) {
   towerScope = this;
+  this.kills = 0;
+  this.upgradeAvailable = false;
   this.index = index;
   this.game = game;
   this.towerX = towerX;
   this.towerY = towerY;
-  this.damage = 5;
-  this.radius = 150;
+  this.towerType = towerType;
   this.bullets = towerBullets;
   this.nextFire = 0;
-  this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, 'tower_ice');
-  this.towerSprite.anchor.set(0);
-  //	this.towerSprite.scale(1,1);
-  this.game.physics.arcade.enable(this.towerSprite);
-  this.firerate = 700;
-  this.bulletSpeed = 150;
+  this.upgradePic = this.game.add.sprite(this.towerX, this.towerY, 'upgrade');
+  this.upgradePic.visible = false;
+  this.towerLevel = 1;
+  
+  //Towertype switch
+  switch (towerType) {
+    case this.game.gameState.iceTower:
+      this.damage = 5;
+      this.radius = 150;
+      this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType);
+      this.firerate = 800; // højt tal = langsommere skud
+      this.bulletSpeed = 250; // højt tal = hurtigere skud
+      this.upgradeCost = 50;
+      break;
+    case this.game.gameState.fireTower:
+      this.damage = 3;
+      this.radius = 100;
+      this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType);
+      this.firerate = 1000;
+      this.bulletSpeed = 250;
+      this.upgradeCost = 10;
+      break;
+  }
+  this.spriteSettings();
 };
 
-bulletHit = function (bunny, bullet) {
+tower.prototype.spriteSettings = function () {
+  this.towerSprite.anchor.set(0);
+  this.towerSprite.inputEnabled = true;
+  this.towerSprite.events.onInputDown.add(this.upgrade, this);
+  //	this.towerSprite.scale(1,1);
+  this.game.physics.arcade.enable(this.towerSprite);
+}
+tower.prototype.bulletOut = function (bullet) {
   bullet.kill();
-  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage();
-  if (destroyed) {}
-};
-ballhit = function (bunny, bullet) {}
+}
+
+tower.prototype.upgrade = function () {
+  if (this.upgradeAvailable && this.game.gameState.gold >= this.upgradeCost) {
+    this.towerLevel++;
+    this.firerate = this.firerate / 2;
+    this.radius = this.radius * 2;
+    this.damage++;
+    this.towerSprite = this.game.add.sprite(this.towerX, this.towerY, this.towerType + this.towerLevel);
+    this.upgradePic.kill();
+    this.upgradeAvailable = false;
+    this.game.gameState.updateGold(this.upgradeCost);
+  }
+}
+
+tower.prototype.checkForUpgrade = function () {
+  if (this.game.gameState.gold >= this.upgradeCost && this.towerLevel === 1) {
+    this.upgradeAvailable = true;
+    this.upgradePic.visible = true;
+  } else {
+    this.upgradePic.visible = false;
+  }
+}
 
 tower.prototype.update = function (creeps, game) {
   this.game.gameState.towerBullets.createMultiple(1, 'bullet');
   for (var i = 0; i < creeps.length; i++) {
     if (game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
+      var bullet = this.bullets.getFirstExists(false);
       if (creeps[i].alive && this.game.time.now > this.nextFire) {
         this.nextFire = this.game.time.now + this.firerate;
-        var bullet = this.bullets.getFirstExists(false);
         game.physics.arcade.enable(bullet);
         bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
         bullet.anchor.set(0.5, 0.5);
         bullet.scale.set(0.5, 0.5);
         bullet.body.setSize(20, 20);
+        bullet.shootingTower = this;
         bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
-
+        bullet.checkWorldBounds = true;
+        bullet.events.onOutOfBounds.add(this.bulletOut, this);
         //				this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, null);
-
-        this.game.physics.arcade.collide(this.bullets, creeps[i].creepSprite, null, bulletHit);
       }
+      this.game.physics.arcade.overlap(this.bullets, creeps[i].creepSprite, bulletHit, null, this);
+
     }
   }
 };
 
+bulletHit = function (bunny, bullet) {
+  bullet.kill();
+  var destroyed = towerScope.game.gameState.creeps[bunny.index].damage();
+  if (destroyed) {
+    bullet.shootingTower.kills++;
+  }
+};
 bunny = function (index, game, points, startY, pi) {
-    this.index = index;
-    this.path = [];
-    this.startY = startY;
-    this.startX = 0;
-    this.points = points;
-    this.pi = pi;
-    this.game = game;
-    this.health = 5;
-    this.alive = true;
-    this.score = 5;
-    this.gold = 20;
-    var x = 0.001000;
-    this.movementSpeed = x;
-    //	var speed = 	1 / game.width/2;
-    this.game.physics.enable(this, Phaser.Physics.ARCADE);
+  this.index = index;
+  this.path = [];
+  this.startY = startY;
+  this.startX = 0;
+  this.points = points;
+  this.pi = pi;
+  this.game = game;
+  this.health = this.game.gameState.level * 5;
+  this.alive = true;
+  this.score = 5;
+  this.gold = 20;
+  var x = 0.001000;
+  this.movementSpeed = x;
+  //	var speed = 	1 / game.width/2;
+  this.game.physics.enable(this, Phaser.Physics.ARCADE);
 
-    this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
-    this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+  this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'worm');
+  this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
 
-    this.creepSprite.anchor.set(0);
-    this.creepSprite.scale.setTo(0.7, 0.7);
-    this.creepSprite.index = index;
-    this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true);//
-    this.creepSprite.animations.play('move', 10, true);
+  this.creepSprite.anchor.set(0);
+  this.creepSprite.scale.setTo(0.7, 0.7);
+  this.creepSprite.index = index;
+  this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
+  this.creepSprite.animations.play('move', 10, true);
 
-    for (var i = 0; i <= 1; i += this.movementSpeed) {
-        var px = this.game.math.linearInterpolation(this.points.x, i);
-        var py = this.game.math.linearInterpolation(this.points.y, i);
-        this.path.push({
-            x: px,
-            y: py
-        });
-    }
+  for (var i = 0; i <= 1; i += this.movementSpeed) {
+    var px = this.game.math.linearInterpolation(this.points.x, i);
+    var py = this.game.math.linearInterpolation(this.points.y, i);
+    this.path.push({
+      x: px,
+      y: py
+    });
+  }
 };
 
 bunny.prototype.damage = function () {
@@ -557,6 +622,8 @@ bunny.prototype.damage = function () {
   this.health -= 5;
   if (this.health <= 0) {
     this.game.gameState.updateCurrency(this.score, this.gold);
+    this.game.gameState.mew = this.game.add.audio('mew');
+    this.game.gameState.mew.play('', 0, 9, false);
     return this.kill();
   }
   return false;
