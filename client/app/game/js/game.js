@@ -15,7 +15,7 @@
       this.pi = 0;
       this.playerhealth = 1000;
       this.level = 0;
-      this.waveTimer = 11; // start tiden for creeps
+      this.waveTimer = 4; // start tiden for creeps
       this.creepSpawnTimer = 50;
       this.test = 0;
       this.spawnAmount = 0;
@@ -25,7 +25,7 @@
 
     create: function () {
       var game = this.game;
-//      this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
+      //      this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
       game.physics.setBoundsToWorld();
       game.gameState = this;
       var createScope = this;
@@ -111,8 +111,8 @@
         for (var i = 0; i < this.towers.length; i++) {
           //hvordan får jeg fat i tårnet? lavet et object?
           var localTower = this.towers[i];
-          console.log('localTower - updateGold', localTower);
-          createScope.ns.Tower.prototype.checkForUpgrade();//send tårnet med ind og lav function checkForUpgrade om?
+          //          console.log('localTower - updateGold', localTower);
+          localTower.checkForUpgrade;//send tårnet med ind og lav function checkForUpgrade om?
         }
       }
 
@@ -127,8 +127,8 @@
           this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
-          //          this.towers[i].checkForUpgrade();
-          createScope.ns.Tower.protoType.checkForUpgrade();
+          this.towers[i].checkForUpgrade();
+          //          createScope.ns.Tower.protoType.checkForUpgrade();
         }
       };
 
@@ -193,9 +193,7 @@
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          var tårn = this.ns.Tower(0, createScope.game.gameState, 50, 50, createScope.towerBullets, 'tower_ice');
-          console.log('towerbullets array', createScope.towerBullets,createScope.towerCount);
-          //          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType);
+          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game.gameState, pX, pY, createScope.towerBullets, 'tower_ice');
           createScope.towers.push(tårn);
           createScope.towerCount++;
           createScope.updateGold(createScope.towerCost);
@@ -383,7 +381,6 @@
         createScope.towerBullets = game.add.group();
         createScope.towerBullets.enableBody = true;
         createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-
       }
 
       insertBackground(game);
@@ -484,9 +481,9 @@
       }
       for (var i = 0; i < this.towers.length; i++) {
         //få fat i tårnet!
-        
+        this.towers[i].update(this.creeps, this.game);
         //        this.towers[i].ns.Tower.prototype.update(this.creeps, this.game);
-        this.ns.Tower.prototype.update(this.creeps, this.game);
+        //        this.ns.Tower.prototype.update(this.creeps, this.game);
 
       }
 

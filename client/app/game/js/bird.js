@@ -1,7 +1,7 @@
 (function () {
   'use strict';
   
-  function Bird() {
+  function Bird(test) {
   }
 
   window['pixione'] = window['pixione'] || {};
