@@ -25,7 +25,7 @@
 
     create: function () {
       var game = this.game;
-      this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
+//      this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
       game.physics.setBoundsToWorld();
       game.gameState = this;
       var createScope = this;
@@ -111,7 +111,8 @@
         for (var i = 0; i < this.towers.length; i++) {
           //hvordan får jeg fat i tårnet? lavet et object?
           var localTower = this.towers[i];
-          createScope.ns.Tower.prototype.checkForUpgrade();
+          console.log('localTower - updateGold', localTower);
+          createScope.ns.Tower.prototype.checkForUpgrade();//send tårnet med ind og lav function checkForUpgrade om?
         }
       }
 
@@ -192,11 +193,10 @@
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
           tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-          //          this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
-          var tårn = createScope.game.gameState.ns.Tower(1, createScope.game.gameState, 50, 50, [0, 1, 2], 'tower_ice');
+          var tårn = this.ns.Tower(0, createScope.game.gameState, 50, 50, createScope.towerBullets, 'tower_ice');
+          console.log('towerbullets array', createScope.towerBullets,createScope.towerCount);
           //          var tårn = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game, pX, pY, createScope.towerBullets, towerType);
           createScope.towers.push(tårn);
-          console.log('ost', tårn, createScope.towers);
           createScope.towerCount++;
           createScope.updateGold(createScope.towerCost);
         } else {
@@ -306,7 +306,7 @@
         sprite.posY = y;
         sprite.events.onDragStart.add(startDrag, this);
         sprite.events.onDragStop.add(stopDrag, this);
-        console.log(sprite);
+        //        console.log(sprite);
       }
 
       function startDrag(theSprite) {
