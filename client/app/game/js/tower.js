@@ -27,7 +27,7 @@
     towerY = towerY;
     bullets = towerBullets;
     var tower = {
-     
+
       index: index,
       gameState: localGameState,
       towerX: towerX,
@@ -37,6 +37,7 @@
       Type: towerType,
 
       checkForUpgrade: function () {
+         console.log('Tower, localTower.checkForUpgrade');
         if (localGameState.gold >= Tower.upgradeCost && towerLevel === 1) {
           upgradeAvailable = true;
           upgradePic.visible = true;
@@ -44,22 +45,24 @@
           upgradePic.visible = false;
         }
       },
-      update: function (creeps, game) {
+      
+      update: function (creeps) {
         bullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
         var test = (towerX + localGameState.tileSize / 2);
-//       console.log("test 1 " + test);
+        //       console.log('towerX + halv tileSize' + test);
         for (var i = 0; i < creeps.length; i++) {
-          console.log("sprite x" + towerSprite.x);
+          //          console.log("sprite x" + towerSprite.x,index);
           if (localGameState.game.physics.arcade.distanceBetween(towerSprite, creeps[i].creepSprite) < radius) {
+//            console.log('radius', radius, index);
             var bullet = bullets.getFirstExists(false);
             //        console.log("gametime: " + localGameState.game.time.now);
             //        console.log("nextFire: " + this.nextFire);
             if (creeps[i].alive && localGameState.game.time.now > nextFire) {
               nextFire = localGameState.game.time.now + firerate;
               localGameState.game.physics.arcade.enable(bullet);
-//               console.log("skyd x 1 " + (towerX + localGameState.tileSize / 2));
-//               
-//               console.log("test" + test);
+              //               console.log("skyd x 1 " + (towerX + localGameState.tileSize / 2));
+              //               
+              //               console.log("test" + test);
               bullet.reset(test, towerY + localGameState.tileSize / 2);
               bullet.anchor.set(0.5, 0.5);
               bullet.scale.set(0.5, 0.5);
@@ -87,7 +90,7 @@
 
     //    //Towertype switch
     switch (Type) {
-      
+
       case gameState.iceTower:
         Tower.prototype.iceTowerProperties(tower);
         break;
@@ -95,13 +98,14 @@
         Tower.prototype.fireTowerProperties();
         break;
     }
+
+    Tower.prototype.spriteSettings();
     return tower;
-    //    Tower.prototype.spriteSettings();
   };
 
-  var test = function () {
-    console.log("Mælk");
-  };
+  //  var test = function () {
+  //    console.log("Mælk");
+  //  };
   Tower.prototype.iceTowerProperties = function (tower) {
     damage = 5;
     radius = 150;
@@ -125,11 +129,11 @@
 
   Tower.prototype.spriteSettings = function () {
     console.log('spriteSetting...');
-    Tower.towerSprite.anchor.set(0);
-    Tower.towerSprite.inputEnabled = true;
-    Tower.towerSprite.events.onInputDown.add(this.upgrade, this);
+    towerSprite.anchor.set(0);
+    towerSprite.inputEnabled = true;
+    towerSprite.events.onInputDown.add(this.upgrade, this);
     //	this.towerSprite.scale(1,1);
-    localGameState.game.physics.arcade.enable(Tower.towerSprite);
+    localGameState.game.physics.arcade.enable(towerSprite);
   };
 
   Tower.prototype.bulletOut = function (bullet) {
@@ -194,7 +198,7 @@
     var destroyed = localGameState.creeps[bunny.index].damage(bullet.shootingTower.damage);
     if (destroyed) {
       bullet.shootingTower.kills++;
-      
+
     }
   };
 

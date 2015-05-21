@@ -109,12 +109,11 @@
           this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
-          //hvordan får jeg fat i tårnet? lavet et object?
+          console.log('GameState, localTower.checkForUpgrade');
           var localTower = this.towers[i];
-          //          console.log('localTower - updateGold', localTower);
-          localTower.checkForUpgrade;//send tårnet med ind og lav function checkForUpgrade om?
+          localTower.checkForUpgrade;
         }
-      }
+      };
 
       this.updateCurrency = function (score, gold) {
         this.gold += gold;
@@ -134,21 +133,25 @@
 
       this.updateHealth = function () {
         healthText.setText('Health: ' + this.playerhealth);
-      }
+      };
+
       this.updateLevelText = function () {
         levelText.setText('Level: ' + this.level);
-      }
+      };
+
       this.getFrames = function (seconds) {
         return seconds * 60;
-      }
+      };
+
       this.updateWaveText = function () {
         waveText.setText('Next wave in: ' + this.waveTimer);
-      }
+      };
+
       this.nextLevel = function () {
         this.spawnAmount = 0;
         this.level++;
         this.updateLevelText();
-      }
+      };
 
       function placeTowerTile(x, y, xx, yy, game) {
         var towerTile = game.add.button(pX, pY, 'tower_tile', isBgTile, this);
@@ -157,7 +160,7 @@
         bgTile.TileMX = mX;
         bgTile.TileMY = mY;
         tileMatrix[mX][mY] = bgTileNumber;
-      }
+      };
 
       function placeBgTile(pX, pY, mX, mY, game) {
         var bgTile = game.add.button(pX, pY, 'background_tile', null, this);
@@ -166,7 +169,7 @@
         bgTile.TileMX = mX;
         bgTile.TileMY = mY;
         tileMatrix[mX][mY] = bgTileNumber;
-      }
+      };
 
       function placePathTile(pX, pY, mX, mY, game) {
         var pathTile = game.add.button(pX, pY, 'path_tile', null, this);
@@ -179,7 +182,7 @@
           points.x.push(pX);
           points.y.push(pY);
         }
-      }
+      };
 
       function placeTowerTile(pX, pY, mX, mY, game) {
         var towerTile = game.add.button(pX, pY, 'tower_tile', this);
@@ -188,7 +191,7 @@
         towerTile.TileMX = mX;
         towerTile.TileMY = mY;
         tileMatrix[mX][mY] = towerTileNumber;
-      }
+      };
 
       function placeTowerByMouse(pX, pY, mX, mY, towerType) {
         if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
@@ -201,7 +204,7 @@
           alert("You cannot place a tower there")
           // todo todo todo}
         }
-      }
+      };
 
 
       function insertBackground(game) {
@@ -213,7 +216,7 @@
           }
           mY++;
         }
-      }
+      };
 
       function insertPath(game) {
         //RANDOM NUMBERS
@@ -253,7 +256,7 @@
             direction = east;
           }
         }
-      }
+      };
 
       function insertTowers(game) {
         for (var pY = 0; pY < height; pY += tileSize) {
@@ -276,7 +279,7 @@
             }
           }
         }
-      }
+      };
 
       function insertIceTowersToBuy(game) {
         var x = 600;
@@ -285,7 +288,7 @@
         var iceTowerMenu = game.add.button(x, y, towerType, null, this);
         var sprite = createScope.game.add.sprite(x, y, towerType);
         initializeSpriteproperties(sprite, x, y, towerType);
-      }
+      };
 
       function insertFireTowersToBuy(game) {
         var x = 700;
@@ -294,7 +297,7 @@
         var fireTowerMenu = game.add.button(x, y, towerType, null, this);
         var sprite = createScope.game.add.sprite(x, y, towerType);
         initializeSpriteproperties(sprite, x, y, towerType);
-      }
+      };
 
       function initializeSpriteproperties(sprite, x, y, towerType) {
         sprite.inputEnabled = true;
@@ -304,8 +307,7 @@
         sprite.posY = y;
         sprite.events.onDragStart.add(startDrag, this);
         sprite.events.onDragStop.add(stopDrag, this);
-        //        console.log(sprite);
-      }
+      };
 
       function startDrag(theSprite) {
         if (!createScope.canAffordTower) {
@@ -313,7 +315,7 @@
         } else {
           theSprite.inputEnabled = true;
         }
-      }
+      };
 
       function stopDrag(theSprite) {
         var xPos = createScope.game.input.x;
@@ -325,42 +327,42 @@
         placeTowerByMouse(pX, pY, mX, mY, theSprite.type);
         theSprite.x = theSprite.posX;
         theSprite.y = theSprite.posY;
-      }
+      };
 
       function initializeHighscore() {
         scoreText = createScope.game.add.text(400, 20, 'Score: ' + createScope.highscore, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeGold() {
         goldText = createScope.game.add.text(200, 20, 'Gold: ' + createScope.gold, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeHealth() {
         healthText = createScope.game.add.text(600, 20, 'Health: ' + createScope.playerhealth, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeLevel() {
         levelText = createScope.game.add.text(800, 20, 'Level: ' + createScope.level, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeTimer() {
         waveText = createScope.game.add.text(1000, 20, 'Next wave in : ' + createScope.waveTimer, {
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function initializeMenuBar() {
         menuBarText = createScope.game.add.text(0, 110, '________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________', {
@@ -371,17 +373,17 @@
           font: 'bold 24px Arial',
           fill: '#ffffff'
         });
-      }
+      };
 
       function getMatrixPosByPixel(pixel) {
         return pixel / tileSize;
-      }
+      };
 
       function towerBullets() {
         createScope.towerBullets = game.add.group();
         createScope.towerBullets.enableBody = true;
         createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-      }
+      };
 
       insertBackground(game);
       insertPath(this.game);
@@ -402,7 +404,7 @@
         isGameOver = true;
         music.stop();
         game.state.start('over', true, false, this.highscore);
-      }
+      };
     },
 
     getPixelPosByMatrixPos: function (koordinat) {
@@ -454,39 +456,34 @@
     update: function () {
       if (this.test % 60 == 0) {
 
-        if (this.waveTimer === 0) { //spwan next creepwave
+        if (this.waveTimer === 0) { //spawn next creepwave
           this.waveTimer = 21;
-
           this.nextLevel();
-
           this.spawnCreeps();
 
           return;
-        } else {
-
+        }
+        else {
           this.waveTimer--;
         }
-
         this.updateWaveText();
       }
+
       if (this.creepStartYPos === null) {
         this.getCreepStartYPos();
       }
-
 
       for (var i = 0; i < this.creeps.length; i++) {
         if (this.creeps[i].alive) {
           this.creeps[i].update();
         }
       }
+
       for (var i = 0; i < this.towers.length; i++) {
-        //få fat i tårnet!
-        this.towers[i].update(this.creeps, this.game);
-        //        this.towers[i].ns.Tower.prototype.update(this.creeps, this.game);
-        //        this.ns.Tower.prototype.update(this.creeps, this.game);
-
+        //DETTE VIRKER!
+        //        console.log('tower update index',this.towers[i]);
+        this.towers[i].update(this.creeps);
       }
-
       this.test++;
     }
   };
