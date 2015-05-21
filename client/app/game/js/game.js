@@ -41,7 +41,7 @@
       //Tower typenames
       this.iceTower = 'tower_ice';
       this.fireTower = 'tower_fire';
-      this.lightningTower = 'lightning_tower';
+      this.lightningTower = 'tower_lightning';
 
       //Creep typenames
       this.bunnyCreep = 'rabbit';
@@ -296,6 +296,15 @@
         var sprite = createScope.game.add.sprite(x, y, towerType);
         initializeSpriteproperties(sprite, x, y, towerType);
       };
+        
+        function insertLightningTowersToBuy(game) {
+        var x = 800;
+        var y = 70;
+        var towerType = game.gameState.lightningTower;
+        var lightningTowerMenu = game.add.button(x, y, towerType, null, this);
+        var sprite = createScope.game.add.sprite(x, y, towerType);
+        initializeSpriteproperties(sprite, x, y, towerType);
+      };
 
       function initializeSpriteproperties(sprite, x, y, towerType) {
         sprite.inputEnabled = true;
@@ -388,6 +397,7 @@
       insertTowers(this.game);
       insertIceTowersToBuy(this.game);
       insertFireTowersToBuy(this.game);
+      insertLightningTowersToBuy(this.game);
       initializeGold();
       initializeHighscore();
       initializeHealth();
@@ -637,9 +647,9 @@ bunny = function (index, game, points, startY, pi, creepType) {
       //Sets the speed of the bunny
       var x = 0.002000;
       this.movementSpeed = x;
-      this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'rabbit');
+      this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'bossRabbit');
       this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
-      this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht w', 0, 3, '', 4), 30, true); //
+      this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
       this.creepSprite.animations.play('move', 10, true);
       this.creepSprite.scale.setTo(0.7, 0.7);
       break;

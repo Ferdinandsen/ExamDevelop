@@ -23,8 +23,10 @@
 			this.load.image('upgrade', '../assets/upgrade.png');
 			this.load.image('tower_ice', '../assets/purchased_ice_tower_tile.png');
 			this.load.image('tower_fire', '../assets/purchased_fire_tower_tile.png');
+            this.load.image('tower_lightning', '../assets/purchased_lightning_tower_tile.png');
 			this.load.image('tower_ice2', '../assets/purchased_ice_tower_upgraded_tile.png');
 			this.load.image('tower_fire2', '../assets/purchased_fire_tower_upgraded_tile.png');
+            this.load.image('tower_lightning2', '../assets/purchased_lightning_tower_upgraded_tile.png');
 			this.load.image('path_tile', '../assets/path_tile2.png');
 			this.load.image('background', '../assets/background.png');
 			this.load.image('timebar', '../assets/timebar.png');
@@ -35,6 +37,7 @@
 			this.load.spritesheet('buttons', '../assets/buttons.png', 400, 50);
 			this.load.spritesheet('menubuttons', '../assets/menubuttons.bmp', 512, 1024);
 			this.load.atlas('rabbit', 'assets/rabbit.png', '../assets/rabbit.json');
+            this.load.atlas('bossRabbit', 'assets/bossRabbit.png', '../assets/bossRabbit.json');
 			this.load.atlas('death', 'assets/death.png', '../assets/death.json');
 			this.load.bitmapFont('gul', '../assets/gul.png', '../assets/gul.fnt');
 			this.load.bitmapFont('minecraftia', '../assets/minecraftia.png', '../assets/minecraftia.xml');

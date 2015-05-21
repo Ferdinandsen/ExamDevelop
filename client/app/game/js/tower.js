@@ -67,6 +67,9 @@
       case gameState.fireTower:
         Tower.prototype.fireTowerProperties(tower);
         break;
+      case gameState.lightningTower:
+            Tower.prototype.lightningTowerProperties(tower);
+            break;
     }
     Tower.prototype.spriteSettings(tower);
     return tower;
@@ -94,6 +97,17 @@
     tower.firerate = 1000;
     tower.bulletSpeed = 450;
     tower.upgradeCost = 40;
+    tower.towerLevel = 1;
+    tower.upgradeAvailable = false;
+  };
+      Tower.prototype.lightningTowerProperties = function (tower) {
+    tower.damage = 1;
+    tower.radius = 300;
+    tower.nextFire = 0;
+    tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
+    tower.firerate = 400; // højt tal = langsommere skud
+    tower.bulletSpeed = 600; // højt tal = hurtigere skud
+    tower.upgradeCost = 50;
     tower.towerLevel = 1;
     tower.upgradeAvailable = false;
   };
