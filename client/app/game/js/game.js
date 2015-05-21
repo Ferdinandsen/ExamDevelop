@@ -112,7 +112,7 @@
           //hvordan får jeg fat i tårnet? lavet et object?
           var localTower = this.towers[i];
           //          console.log('localTower - updateGold', localTower);
-          localTower.checkForUpgrade;//send tårnet med ind og lav function checkForUpgrade om?
+          localTower.checkForUpgrade(localTower);//send tårnet med ind og lav function checkForUpgrade om?
         }
       }
 
@@ -127,7 +127,8 @@
           this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
-          this.towers[i].checkForUpgrade();
+          var localTower =  this.towers[i];
+          localTower.checkForUpgrade(localTower);
           //          createScope.ns.Tower.protoType.checkForUpgrade();
         }
       };
@@ -477,11 +478,13 @@
       for (var i = 0; i < this.creeps.length; i++) {
         if (this.creeps[i].alive) {
           this.creeps[i].update();
+          
         }
       }
       for (var i = 0; i < this.towers.length; i++) {
         //få fat i tårnet!
-        this.towers[i].update(this.creeps, this.game);
+        this.towers[i].update(this.creeps, this.towers[i]);
+//        console.log("tårnets sprite x der bliver loopet igennem er: " + this.towers[i].towerSprite.x);
         //        this.towers[i].ns.Tower.prototype.update(this.creeps, this.game);
         //        this.ns.Tower.prototype.update(this.creeps, this.game);
 
