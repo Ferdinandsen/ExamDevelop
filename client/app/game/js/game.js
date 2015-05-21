@@ -7,7 +7,6 @@
     init: function () {
       this.ns = window['pixione'];
       this.ns.Bird();
-
       this.gametime = 0;
       this.creeps = [];
       this.creepcount = 0;
@@ -25,7 +24,6 @@
 
     create: function () {
       var game = this.game;
-      //      this.ns.Tower(1, this, 50, 50, [0, 1, 2], 'tower_ice');
       game.physics.setBoundsToWorld();
       game.gameState = this;
       var createScope = this;
@@ -39,11 +37,13 @@
       this.towers = [];
       var towers = this.towers;
       var towerCount = this.towerCount;
+      
       //Tower typenames
       this.iceTower = 'tower_ice';
       this.fireTower = 'tower_fire';
       this.lightningTower = 'lightning_tower';
 
+      //Creep typenames
       this.bunnyCreep = 'rabbit';
       this.bossCreep = 'boss';
 
@@ -55,7 +55,7 @@
       var bgTileNumber = this.bgTileNumber,
         pathTileNumber = this.pathTileNumber,
         towerTileNumber = this.towerTileNumber,
-        iceTower = this.iceTowerTileNumber;
+        iceTower = this.iceTowerTileNumber; // <------------------------------------------------ ?????
 
       this.height = this.game.height;
       this.width = this.game.width;
@@ -111,9 +111,7 @@
         for (var i = 0; i < this.towers.length; i++) {
           console.log('GameState, localTower.checkForUpgrade');
           var localTower = this.towers[i];
-          //          console.log('localTower - updateGold', localTower);
-          localTower.checkForUpgrade(localTower);//send tårnet med ind og lav function checkForUpgrade om?
-
+          localTower.checkForUpgrade(localTower);//<-----------------------------------------------the fuck ? sender sig selv ind i sig selv ? callback?
         }
       };
 
@@ -128,9 +126,8 @@
           this.canAffordTower = false;
         }
         for (var i = 0; i < this.towers.length; i++) {
-          var localTower =  this.towers[i];
+          var localTower = this.towers[i];
           localTower.checkForUpgrade(localTower);
-          //          createScope.ns.Tower.protoType.checkForUpgrade();
         }
       };
 
@@ -209,7 +206,6 @@
         }
       };
 
-
       function insertBackground(game) {
         for (var pY = 0; pY < height; pY += tileSize) {
           mX = 0;
@@ -222,7 +218,6 @@
       };
 
       function insertPath(game) {
-        //RANDOM NUMBERS
         var pY = height / 2; //459 med tiles 
         var randomNumber;
         mX = 0;
@@ -401,6 +396,7 @@
       initializeMenuBar();
       towerBullets();
 
+      //music
       music = this.game.add.audio('bgmusic');
       music.play('', 0, 1, true);
       this.gameOver = function () {
@@ -456,6 +452,7 @@
         }
       }
     },
+
     update: function () {
       if (this.test % 60 == 0) {
 
@@ -479,15 +476,11 @@
       for (var i = 0; i < this.creeps.length; i++) {
         if (this.creeps[i].alive) {
           this.creeps[i].update();
-          
+
         }
       }
       for (var i = 0; i < this.towers.length; i++) {
-        //få fat i tårnet!
         this.towers[i].update(this.creeps, this.towers[i]);
-//        console.log("tårnets sprite x der bliver loopet igennem er: " + this.towers[i].towerSprite.x);
-        //        this.towers[i].ns.Tower.prototype.update(this.creeps, this.game);
-        //        this.ns.Tower.prototype.update(this.creeps, this.game);
       }
       this.test++;
     }
