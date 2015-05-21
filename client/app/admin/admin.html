@@ -16,7 +16,8 @@
         <strong>{{highscore.name}}</strong><br>
         <span class="text-muted">{{highscore.score}}</span>
         <a ng-click="deleteHighscore(highscore)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
-        <a ng-click="softDeleteHighscore(highscore)" ng-show="highscore.isDeleted!=true" class="trash"><span class="glyphicon glyphicon-remove pull-right"</a>
+        <a ng-click="softDeleteHighscore(highscore)" ng-show="highscore.isDeleted!=true" class="trash"><span class="glyphicon glyphicon-remove pull-right"></span></a>
+<!--        <a ng-show="highscore.isDeleted!=false" class="trash"><span class="text-muted pull-right">Soft deleted</span></a>-->
     </li>
   </ul>
 </div>

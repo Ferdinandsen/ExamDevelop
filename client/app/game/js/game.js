@@ -504,7 +504,7 @@ tower.prototype.update = function (creeps, game) {
         game.physics.arcade.enable(bullet);
         bullet.reset(this.towerX + this.game.gameState.tileSize / 2, this.towerY + this.game.gameState.tileSize / 2);
         bullet.anchor.set(0.5, 0.5);
-        bullet.scale.set(0.2, 0.2);
+        bullet.scale.set(0.5, 0.5);
         bullet.body.setSize(20, 20);
         bullet.rotation = this.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
 
