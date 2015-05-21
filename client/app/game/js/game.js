@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    function GameState() {}
+    function GameState() { }
 
     GameState.prototype = {
         init: function () {
@@ -109,7 +109,6 @@
                     this.canAffordTower = false;
                 }
                 for (var i = 0; i < this.towers.length; i++) {
-                    console.log('GameState, localTower.checkForUpgrade');
                     var localTower = this.towers[i];
                     localTower.checkForUpgrade(localTower); //<-----------------------------------------------the fuck ? sender sig selv ind i sig selv ? callback?
                 }
@@ -202,7 +201,7 @@
                     createScope.updateGold(createScope.towerCost);
                 } else {
                     alert("You cannot place a tower there")
-                        // todo todo todo}
+                    // todo todo todo}
                 }
             };
 
@@ -319,9 +318,12 @@
             function startDrag(theSprite) {
                 if (!createScope.canAffordTower) {
                     theSprite.inputEnabled = false;
+                    alert("You cannot afford this tower");
+                    //STOP DRAGGING!
                 } else {
                     theSprite.inputEnabled = true;
                 }
+                theSprite.inputEnabled = true;
             };
 
             function stopDrag(theSprite) {
@@ -390,9 +392,7 @@
                 createScope.towerBullets = game.add.group();
                 createScope.towerBullets.enableBody = true;
                 createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-
             };
-
 
             insertBackground(game);
             insertPath(this.game);
@@ -434,10 +434,7 @@
             this.test2 = 0;
             var delay = 500;
             var counter = 0;
-
             var localGameState = this;
-
-            //      var localGameState = this.game.gameState;
 
             var testCreeps = this.creeps;
             var finish = false;
@@ -472,10 +469,8 @@
             if (this.test % 60 == 0) {
                 if (this.waveTimer === 0) { //spawn next creepwave
                     this.waveTimer = 21;
-
                     this.nextLevel();
                     this.spawnCreeps();
-
                     return;
                 } else {
                     this.waveTimer--;
@@ -490,12 +485,10 @@
             for (var i = 0; i < this.creeps.length; i++) {
                 if (this.creeps[i].alive) {
                     this.creeps[i].update();
-
                 }
             }
             for (var i = 0; i < this.towers.length; i++) {
                 this.towers[i].update(this.creeps, this.towers[i]);
-
             }
             this.test++;
         }
@@ -504,7 +497,7 @@
     window['pixione'] = window['pixione'] || {};
     window['pixione'].GameState = GameState;
 
-}());
+} ());
 
 
 bunny = function (index, game, points, startY, pi, creepType) {
@@ -523,35 +516,35 @@ bunny = function (index, game, points, startY, pi, creepType) {
 
 
     switch (creepType) {
-    case this.game.gameState.bunnyCreep:
-        this.maxHealth = this.game.gameState.level * 5;
-        this.health = this.game.gameState.level * 5;
-        this.score = 5;
-        this.gold = 20;
-        //Sets the speed of the bunny
-        var x = 0.001000;
-        this.movementSpeed = x;
-        this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'rabbit');
-        this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
-        this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
-        this.creepSprite.animations.play('move', 10, true);
-        this.creepSprite.scale.setTo(0.7, 0.7);
-        break;
+        case this.game.gameState.bunnyCreep:
+            this.maxHealth = this.game.gameState.level * 5;
+            this.health = this.game.gameState.level * 5;
+            this.score = 5;
+            this.gold = 20;
+            //Sets the speed of the bunny
+            var x = 0.001000;
+            this.movementSpeed = x;
+            this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'rabbit');
+            this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+            this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
+            this.creepSprite.animations.play('move', 10, true);
+            this.creepSprite.scale.setTo(0.7, 0.7);
+            break;
 
-    case this.game.gameState.bossCreep:
-        this.maxHealth = this.game.gameState.level * 10;
-        this.health = this.game.gameState.level * 10;
-        this.score = 50;
-        this.gold = 100;
-        //Sets the speed of the bunny
-        var x = 0.002000;
-        this.movementSpeed = x;
-        this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'bossRabbit');
-        this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
-        this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
-        this.creepSprite.animations.play('move', 10, true);
-        this.creepSprite.scale.setTo(0.7, 0.7);
-        break;
+        case this.game.gameState.bossCreep:
+            this.maxHealth = this.game.gameState.level * 10;
+            this.health = this.game.gameState.level * 10;
+            this.score = 50;
+            this.gold = 100;
+            //Sets the speed of the bunny
+            var x = 0.002000;
+            this.movementSpeed = x;
+            this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'bossRabbit');
+            this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
+            this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
+            this.creepSprite.animations.play('move', 10, true);
+            this.creepSprite.scale.setTo(0.7, 0.7);
+            break;
     }
 
     this.creepSprite.healthbar = this.game.add.sprite(0, startY, 'healthbar');
@@ -564,6 +557,7 @@ bunny = function (index, game, points, startY, pi, creepType) {
     // make path
     this.generateMovementPath();
 };
+
 bunny.prototype.generateMovementPath = function () {
     //=======
     this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
@@ -579,7 +573,8 @@ bunny.prototype.generateMovementPath = function () {
             y: py
         });
     }
-}
+};
+
 bunny.prototype.damage = function (damage) {
     this.health -= damage;
 
@@ -594,12 +589,13 @@ bunny.prototype.damage = function (damage) {
     }
     return false;
 };
+
 bunny.prototype.kill = function () {
     this.alive = false;
     this.creepSprite.kill();
 
     return true;
-}
+};
 
 bunny.prototype.update = function () {
     this.gametime++;
@@ -611,7 +607,6 @@ bunny.prototype.update = function () {
     if (this.pi >= this.path.length) {
         this.creepSprite.healthbar.kill();
         this.game.gameState.playerhealth--;
-        console.log(this.index);
         this.game.gameState.creeps.splice(this.index, 1);
 
         for (var i = this.index; i < this.game.gameState.creeps.length; i++) {

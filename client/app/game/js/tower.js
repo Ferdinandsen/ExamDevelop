@@ -89,7 +89,6 @@
   };
 
   Tower.prototype.fireTowerProperties = function (tower) {
-    console.log('fire tower');
     tower.damage = 3;
     tower.radius = 200;
     tower.nextFire = 0;
