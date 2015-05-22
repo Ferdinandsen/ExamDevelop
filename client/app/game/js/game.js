@@ -195,7 +195,7 @@
             function placeTowerByMouse(pX, pY, mX, mY, towerType) {
                 if (createScope.gold >= createScope.towerCost && tileMatrix[mX][mY] !== createScope.iceTowerTileNumber && tileMatrix[mX][mY] == towerTileNumber) {
                     tileMatrix[mX][mY] = createScope.iceTowerTileNumber;
-                    var aTower = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game.gameState, pX, pY, createScope.towerBullets, towerType);
+                    var aTower = new createScope.game.gameState.ns.Tower(createScope.towerCount, createScope.game.gameState, pX, pY, towerType);
                     createScope.towers.push(aTower);
                     createScope.towerCount++;
                     createScope.updateGold(createScope.towerCost);
@@ -317,13 +317,10 @@
 
             function startDrag(theSprite) {
                 if (!createScope.canAffordTower) {
-                    theSprite.inputEnabled = false;
-                    alert("You cannot afford this tower");
-                    //STOP DRAGGING!
-                } else {
-                    theSprite.inputEnabled = true;
+                    theSprite.input.disableDrag();
+                    console.log("You cannot afford this tower");
                 }
-                theSprite.inputEnabled = true;
+                theSprite.input.enableDrag();
             };
 
             function stopDrag(theSprite) {
@@ -388,12 +385,6 @@
                 return pixel / tileSize;
             };
 
-            function towerBullets() {
-                createScope.towerBullets = game.add.group();
-                createScope.towerBullets.enableBody = true;
-                createScope.towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
-            };
-
             insertBackground(game);
             insertPath(this.game);
             insertTowers(this.game);
@@ -406,7 +397,6 @@
             initializeLevel();
             initializeTimer();
             initializeMenuBar();
-            towerBullets();
 
             //music
             music = this.game.add.audio('bgmusic');

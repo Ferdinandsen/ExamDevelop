@@ -4,7 +4,7 @@
 
   var localGameState;
 
-  function Tower(index, gameState, towerX, towerY, towerBullets, towerType) {
+  function Tower(index, gameState, towerX, towerY, towerType) {
     localGameState = gameState;
     var localType = towerType;
     var tower = {
@@ -14,7 +14,7 @@
       towerX: towerX,
       towerY: towerY,
       towerSprite: undefined,
-      bullets: towerBullets,
+      bullets: Tower.prototype.towerBullets(localGameState),
       Type: towerType,
       towerLevel: undefined,
       upgradeAvailable: false,
@@ -36,8 +36,10 @@
         }
       },
 
+
       update: function (creeps, tower) {
-        this.bullets.createMultiple(1, 'tower_fire_bullet');
+        this.bullets.createMultiple(1, this.Type + '_bullet');
+        console.log('bullet: ' + this.Type + '_bullet');
         for (var i = 0; i < creeps.length; i++) {
           if (localGameState.game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
             var bullet = this.bullets.getFirstExists(false);
@@ -68,13 +70,21 @@
         Tower.prototype.fireTowerProperties(tower);
         break;
       case gameState.lightningTower:
-            Tower.prototype.lightningTowerProperties(tower);
-            break;
+                Tower.prototype.lightningTowerProperties(tower);
+                break;
     }
     Tower.prototype.spriteSettings(tower);
     return tower;
 
   };
+
+    Tower.prototype.towerBullets = function (localGameState) {
+        var towerBullets;
+        towerBullets = localGameState.game.add.group();
+        towerBullets.enableBody = true;
+        towerBullets.physicsBodyType = Phaser.Physics.ARCADE;
+        return towerBullets;
+    };
 
   Tower.prototype.iceTowerProperties = function (tower) {
     tower.damage = 5;
@@ -99,7 +109,7 @@
     tower.towerLevel = 1;
     tower.upgradeAvailable = false;
   };
-      Tower.prototype.lightningTowerProperties = function (tower) {
+    Tower.prototype.lightningTowerProperties = function (tower) {
     tower.damage = 1;
     tower.radius = 300;
     tower.nextFire = 0;

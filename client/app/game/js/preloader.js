@@ -34,8 +34,9 @@
 			this.load.image('buttonmask', '../assets/buttonmask.png');
 			this.load.image("enemy", "../assets/enemy.png");
 
-			this.load.image("tower_ice_bullet", "../assets/bullet.png");
+			this.load.image("tower_ice_bullet", "../assets/ice_projectile.png");
 			this.load.image("tower_fire_bullet", "../assets/fire_projectile.png");
+			this.load.image('tower_lightning_bullet', '../assets/lightning_projectile.png');
 			this.load.image("bullet", "../assets/bullet.png");
             
 			this.load.spritesheet('healthbar', '../assets/healthbar.png', 400, 50);
