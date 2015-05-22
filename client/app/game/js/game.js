@@ -110,7 +110,7 @@
                 }
                 for (var i = 0; i < this.towers.length; i++) {
                     var localTower = this.towers[i];
-                    localTower.checkForUpgrade(localTower); //<-----------------------------------------------the fuck ? sender sig selv ind i sig selv ? callback?
+                    localTower.checkForUpgrade();
                 }
             };
 
@@ -126,7 +126,7 @@
                 }
                 for (var i = 0; i < this.towers.length; i++) {
                     var localTower = this.towers[i];
-                    localTower.checkForUpgrade(localTower);
+                    localTower.checkForUpgrade();
                 }
             };
 
@@ -249,7 +249,6 @@
                         }
                         placePathTile(pX, pY, mX, mY, game);
                         pX = pX - tileSize;
-
                         direction = east;
                     }
                 }

@@ -27,12 +27,12 @@
       kills: 0,
       upgradePic: localGameState.game.add.sprite(towerX, towerY, 'upgrade'),
 
-      checkForUpgrade: function (tower) {
-        if (localGameState.gold >= tower.upgradeCost && tower.towerLevel === 1) {
-          tower.upgradeAvailable = true;
-          tower.upgradePic.visible = true;
+      checkForUpgrade: function () {
+        if (localGameState.gold >= this.upgradeCost && this.towerLevel === 1) {
+          this.upgradeAvailable = true;
+          this.upgradePic.visible = true;
         } else {
-          tower.upgradePic.visible = false;
+          this.upgradePic.visible = false;
         }
       },
 
