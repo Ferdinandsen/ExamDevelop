@@ -12,13 +12,15 @@
             this.creepcount = 0;
             this.creepStartYPos = null;
             this.pi = 0;
-            this.playerhealth = 1000;
+            this.playerhealth = 10;
             this.level = 0;
-            this.waveTimer = 4; // start tiden for creeps
-            this.creepSpawnTimer = 50;
+            this.waveTimer = 11; // start tiden for creeps
+            //            this.creepSpawnTimer = 50;
             this.test = 0;
             this.spawnAmount = 0;
-            this.towerCost = 30;
+            
+            //fast towercost ?!
+            this.towerCost;
             this.canAffordTower = true;
         },
 
@@ -82,7 +84,7 @@
             var waveText;
             var menuBarText;
             //Set Starting gold amount
-            this.gold = 100;
+            this.gold = 50;
 
             var isGameOver = false;
             var music;
@@ -283,6 +285,7 @@
                 var towerType = game.gameState.iceTower;
                 var iceTowerMenu = game.add.button(x, y, towerType, null, this);
                 var sprite = createScope.game.add.sprite(x, y, towerType);
+                sprite.towerCost = 15;
                 initializeSpriteproperties(sprite, x, y, towerType);
             };
 
@@ -292,6 +295,7 @@
                 var towerType = game.gameState.fireTower;
                 var fireTowerMenu = game.add.button(x, y, towerType, null, this);
                 var sprite = createScope.game.add.sprite(x, y, towerType);
+                sprite.towerCost = 25;
                 initializeSpriteproperties(sprite, x, y, towerType);
             };
 
@@ -301,6 +305,7 @@
                 var towerType = game.gameState.lightningTower;
                 var lightningTowerMenu = game.add.button(x, y, towerType, null, this);
                 var sprite = createScope.game.add.sprite(x, y, towerType);
+                sprite.towerCost = 35;
                 initializeSpriteproperties(sprite, x, y, towerType);
             };
 
@@ -315,6 +320,7 @@
             };
 
             function startDrag(theSprite) {
+                createScope.towerCost = theSprite.towerCost;
                 if (!createScope.canAffordTower) {
                     theSprite.input.disableDrag();
                     console.log("You cannot afford this tower");
@@ -508,8 +514,8 @@ bunny = function (index, game, points, startY, pi, creepType) {
         case this.game.gameState.bunnyCreep:
             this.maxHealth = this.game.gameState.level * 5;
             this.health = this.game.gameState.level * 5;
-            this.score = 5;
-            this.gold = 20;
+            this.score = 1 + this.game.gameState.level;
+            this.gold = 2;
             //Sets the speed of the bunny
             var x = 0.001000;
             this.movementSpeed = x;
@@ -523,10 +529,10 @@ bunny = function (index, game, points, startY, pi, creepType) {
         case this.game.gameState.bossCreep:
             this.maxHealth = this.game.gameState.level * 10;
             this.health = this.game.gameState.level * 10;
-            this.score = 50;
-            this.gold = 100;
+            this.score = this.game.gameState.level + 10;
+            this.gold = 5;
             //Sets the speed of the bunny
-            var x = 0.002000;
+            var x = 0.000600;
             this.movementSpeed = x;
             this.creepSprite = this.game.add.sprite(this.startX, this.startY, 'bossRabbit');
             this.game.physics.enable(this.creepSprite, Phaser.Physics.ARCADE);
@@ -541,19 +547,14 @@ bunny = function (index, game, points, startY, pi, creepType) {
 
     this.creepSprite.anchor.set(0);
     this.creepSprite.index = index;
-    //<<<<<<< HEAD
-
-    // make path
     this.generateMovementPath();
 };
 
 bunny.prototype.generateMovementPath = function () {
-    //=======
+
     this.creepSprite.animations.add('move', Phaser.Animation.generateFrameNames('kriecht e', 0, 3, '', 4), 30, true); //
     this.creepSprite.animations.play('move', 10, true);
 
-
-    //>>>>>>> feature/fix_lag
     for (var i = 0; i <= 1; i += this.movementSpeed) {
         var px = this.game.math.linearInterpolation(this.points.x, i);
         var py = this.game.math.linearInterpolation(this.points.y, i);

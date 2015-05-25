@@ -36,10 +36,8 @@
         }
       },
 
-
       update: function (creeps, tower) {
         this.bullets.createMultiple(1, this.Type + '_bullet');
-        console.log('bullet: ' + this.Type + '_bullet');
         for (var i = 0; i < creeps.length; i++) {
           if (localGameState.game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
             var bullet = this.bullets.getFirstExists(false);
@@ -92,31 +90,31 @@
     tower.nextFire = 0;
     tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
     tower.firerate = 800; // højt tal = langsommere skud
-    tower.bulletSpeed = 450; // højt tal = hurtigere skud
-    tower.upgradeCost = 50;
+    tower.bulletSpeed = 150; // højt tal = hurtigere skud
+    tower.upgradeCost = 10;
     tower.towerLevel = 1;
     tower.upgradeAvailable = false;
   };
 
   Tower.prototype.fireTowerProperties = function (tower) {
-    tower.damage = 3;
-    tower.radius = 200;
+    tower.damage = 7;
+    tower.radius = 185;
     tower.nextFire = 0;
     tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
-    tower.firerate = 1000;
-    tower.bulletSpeed = 450;
-    tower.upgradeCost = 40;
+    tower.firerate = 900;
+    tower.bulletSpeed = 185;
+    tower.upgradeCost = 15;
     tower.towerLevel = 1;
     tower.upgradeAvailable = false;
   };
     Tower.prototype.lightningTowerProperties = function (tower) {
-    tower.damage = 1;
-    tower.radius = 300;
+    tower.damage = 8;
+    tower.radius = 185;
     tower.nextFire = 0;
     tower.towerSprite = localGameState.game.add.sprite(tower.towerX, tower.towerY, tower.Type);
-    tower.firerate = 400; // højt tal = langsommere skud
-    tower.bulletSpeed = 600; // højt tal = hurtigere skud
-    tower.upgradeCost = 50;
+    tower.firerate = 600; // højt tal = langsommere skud
+    tower.bulletSpeed = 400; // højt tal = hurtigere skud
+    tower.upgradeCost = 20;
     tower.towerLevel = 1;
     tower.upgradeAvailable = false;
   };
@@ -138,8 +136,8 @@
     if (towerSprite.theTower.upgradeAvailable && localGameState.gold >= towerSprite.theTower.upgradeCost) {
       towerSprite.theTower.towerLevel++;
       towerSprite.theTower.firerate = towerSprite.theTower.firerate / 2;
-      towerSprite.theTower.radius = towerSprite.theTower.radius * 2;
-      towerSprite.theTower.damage++;
+      towerSprite.theTower.radius = towerSprite.theTower.radius * 1.1;
+      towerSprite.theTower.damage = towerSprite.theTower.damage * 1.5;
       towerSprite.theTower.towerSprite = localGameState.add.sprite(towerSprite.theTower.towerX, towerSprite.theTower.towerY, towerSprite.theTower.Type + towerSprite.theTower.towerLevel);
       towerSprite.theTower.upgradePic.kill();
       towerSprite.theTower.upgradeAvailable = false;
@@ -160,44 +158,5 @@
 
 } ());
 
-
-  //  Tower.prototype.upgrade = function () {
-  //    if (upgradeAvailable && localGameState.gold >= Tower.upgradeCost) {
-  //      towerLevel++;
-  //      Tower.firerate = Tower.firerate / 2;
-  //      Tower.radius = Tower.radius * 2;
-  //      Tower.damage++;
-  //      Tower.towerSprite = localGameState.add.sprite(Tower.towerX, Tower.towerY, Tower.Type + Tower.towerLevel);
-  //      upgradePic.kill();
-  //      upgradeAvailable = false;
-  //      localGameState.updateGold(Tower.upgradeCost);
-  //    }
-  //  };
-
-
-  //  Tower.prototype.update = function (creeps, game) {
-  //    bullets.createMultiple(1, 'tower_fire_bullet'); //this.towerType + '_bullet'
-  //    for (var i = 0; i < creeps.length; i++) {
-  //      //      console.log("radius: ", this.radius);
-  //      if (localGameState.game.physics.arcade.distanceBetween(this.towerSprite, creeps[i].creepSprite) < this.radius) {
-  //        var bullet = bullets.getFirstExists(false);
-  //        //        console.log("gametime: " + localGameState.game.time.now);
-  //        //        console.log("nextFire: " + this.nextFire);
-  //        if (creeps[i].alive && localGameState.game.time.now > this.nextFire) {
-  //          this.nextFire = localGameState.game.time.now + this.firerate;
-  //          localGameState.game.physics.arcade.enable(bullet)
-  //          bullet.reset(this.towerX + localGameState.tileSize / 2, this.towerY + localGameState.tileSize / 2);
-  //          bullet.anchor.set(0.5, 0.5);
-  //          bullet.scale.set(0.5, 0.5);
-  //          bullet.body.setSize(20, 20);
-  //          bullet.shootingTower = this;
-  //          bullet.rotation = localGameState.game.physics.arcade.moveToObject(bullet, creeps[i].creepSprite, this.bulletSpeed);
-  //          bullet.checkWorldBounds = true;
-  //          bullet.events.onOutOfBounds.add(this.bulletOut, this);
-  //        }
-  //        localGameState.game.physics.arcade.overlap(bullets, creeps[i].creepSprite, this.bulletHit, null, this); // this eller Tower?
-  //      }
-  //    }
-  //  };
 
   
