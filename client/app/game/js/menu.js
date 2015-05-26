@@ -40,7 +40,7 @@
         },
         
         highscore: function(){
-            window.location = 'http://google.com';
+            window.location = window.location.hostname;
         }
 
         //        Legacy! fra Lars
