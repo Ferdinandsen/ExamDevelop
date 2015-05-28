@@ -18,7 +18,7 @@
             var index = 0;
             //send JSON to API
             var xmlhttp = new XMLHttpRequest();
-            var url = "http://localhost:9000/api/highscores";
+            var url = '/api/highscores';
 
             while (this.game.name === null) {
                 this.game.name = prompt("Game over... What is your name?");
@@ -33,11 +33,11 @@
             xmlhttp.setRequestHeader("Content-type", "application/JSON");
             xmlhttp.send(highscoreObj);
 
-            $.get('http://localhost:9000/api/highscores', function (responseText) {
+            $.get('/api/highscores', function (responseText) {
                 var resultList = [];
 
                 allHighscores = responseText.all;
-                // Sorts allHighscores by the score property descending
+                // Sorts allHighscores by the score property descending 2
                 allHighscores.sort(compare);
 
                 for (var i = 0; i < allHighscores.length; i++) {
